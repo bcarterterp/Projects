@@ -1,0 +1,35 @@
+131: //------ test arrays -------
+132: 
+133: int a1[4];
+134: 
+135: void
+136: grammarTest() {
+137:   int a,b,c,d[2];
+138: 
+139:   // test arrays
+140:   a1[1] = 2;
+141:   b = 2*d[0];
+142:   c = d[a1[1]];
+143: }
+144: 
+** Global Variables **
+a1, int, array
+grammarTest, void, function, param = <void>
+printInt, void, function, param = int
+printLn, void, function, param = <void>
+printStr, void, function, param = String
+** Local Variables in grammarTest() **
+{
+a, int
+b, int
+c, int
+d, int, array
+}
+TREE_PROC: grammarTest
+{
+    TREE_INSTR: a1[1] = 2
+    TREE_INSTR: b = (2 MUL d[0])
+    TREE_INSTR: c = d[a1[1]]
+}
+END_PROC
+

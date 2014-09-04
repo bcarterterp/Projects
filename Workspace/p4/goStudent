@@ -1,0 +1,10 @@
+#!/bin/csh
+
+foreach prog (01 02 03 04 05 06 07)
+        echo "////////////////////////////////////////////////////"
+        echo "///////////// parsing test$prog.c //////////////////////"
+        echo "////////////////////////////////////////////////////"
+        java mycc.parser -O test$prog.c > test$prog.log
+        java test$prog >> test$prog.log
+        echo ""
+end

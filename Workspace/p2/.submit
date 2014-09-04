@@ -1,0 +1,11 @@
+# Submit server .submit file for
+#  Course CMSC430
+#  Project 2: C-- Type Checker and AST
+
+courseName=CMSC430
+semester=201401
+projectNumber=2
+courseKey=24f2bf72790ee569
+authentication.type=ldap
+baseURL=https://submit.cs.umd.edu:443/spring2014
+submitURL=https://submit.cs.umd.edu:443/spring2014/eclipse/SubmitProjectViaEclipse

@@ -1,0 +1,26 @@
+15: int x;
+16: 
+17: int f( ) 
+18: {
+19: 	x = 1;
+20: 	x = 1+x;
+21: }
+** Global Variables **
+f, int, function, param = <void>
+printInt, void, function, param = int
+printLn, void, function, param = <void>
+printStr, void, function, param = String
+x, int
+** Local Variables in f() **
+f, int, function, param = <void>
+printInt, void, function, param = int
+printLn, void, function, param = <void>
+printStr, void, function, param = String
+x, int
+TREE_PROC: f
+{
+    TREE_INSTR: x = 1
+    TREE_INSTR: x = (1 PLUS x)
+}
+END_PROC
+

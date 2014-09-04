@@ -1,0 +1,58 @@
+352: // peephole optimizations - constant arithmetic & algebraic simplification
+353: 
+354: void main ( )
+355: {
+356:    int x,z;
+357:    z = 0;
+358:    x = 2;
+359: 
+360:    printStr("Results should be : 10");
+361:    printLn();
+362: 
+363:    z = z+(1+2);
+364:    z = z+(3*4-5);
+365:    printInt(z);
+366:    printLn();
+367: 
+368:    printStr("Results should be : 14");
+369:    printLn();
+370: 
+371:    z = z+(x+0);
+372:    z = z+(0+1*x);
+373:    printInt(z);
+374:    printLn();
+375: }
+** Global Variables **
+main, void, function, param = <void>
+printInt, void, function, param = int
+printLn, void, function, param = <void>
+printStr, void, function, param = String
+** Local Variables in main() **
+{
+x, int
+z, int
+}
+TREE_PROC: main
+{
+    TREE_INSTR: z = 0
+    TREE_INSTR: x = 2
+    TREE_INSTR: CALL printStr("Results should be : 10")
+    TREE_INSTR: CALL printLn()
+    TREE_INSTR: z = (z PLUS 3)
+    TREE_INSTR: z = (z PLUS 7)
+    TREE_INSTR: CALL printInt(z)
+    TREE_INSTR: CALL printLn()
+    TREE_INSTR: CALL printStr("Results should be : 14")
+    TREE_INSTR: CALL printLn()
+    TREE_INSTR: z = (z PLUS x)
+    TREE_INSTR: z = (z PLUS x)
+    TREE_INSTR: CALL printInt(z)
+    TREE_INSTR: CALL printLn()
+}
+END_PROC
+
+** Executing test09.class **
+Results should be : 10
+10
+Results should be : 14
+14

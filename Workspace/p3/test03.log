@@ -1,0 +1,104 @@
+42: // test control flow statements
+43: int x,y;
+44: void main ( )
+45: {
+46:    int a,b;
+47:    x = 1;
+48:    y = 2;
+49:    a = 3;
+50:    b = 4;
+51: 
+52:    printStr("Results should be : 2 7 1 2 3 4 ");
+53:    printLn();
+54: 
+55:    if (x == 3) { 
+56:        printStr("Error 1"); 
+57:    }
+58:    if (y != 2)  {
+59:        printStr("Error 2"); 
+60:    }
+61:    else { 
+62:        printInt(y); 
+63:        printStr(" ");
+64:    }
+65:    if (1 == 1) {
+66:        printInt( a + b ); 
+67:        printStr(" ");
+68:    }
+69:    else { 
+70:        printStr("Error 3"); 
+71:        printStr(" ");
+72:    }
+73:    while (x != 5) {
+74:        printInt(x);
+75:        printStr(" ");
+76:        x = x + 1;
+77:    } 
+78:    printLn(); 
+79: }
+80: 
+** Global Variables **
+main, void, function, param = <void>
+printInt, void, function, param = int
+printLn, void, function, param = <void>
+printStr, void, function, param = String
+x, int
+y, int
+** Local Variables in main() **
+{
+a, int
+b, int
+{
+}
+{
+}
+{
+}
+{
+}
+{
+}
+{
+}
+}
+TREE_PROC: main
+{
+    TREE_INSTR: x = 1
+    TREE_INSTR: y = 2
+    TREE_INSTR: a = 3
+    TREE_INSTR: b = 4
+    TREE_INSTR: CALL printStr("Results should be : 2 7 1 2 3 4 ")
+    TREE_INSTR: CALL printLn()
+  TREE_IF: CONDITION: (x EQ_OP 3)
+{
+    TREE_INSTR: CALL printStr("Error 1")
+}
+  END_IF 
+  TREE_IF: CONDITION: (y NE_OP 2)
+{
+    TREE_INSTR: CALL printStr("Error 2")
+}
+  ELSE: 
+{
+    TREE_INSTR: CALL printInt(y)
+    TREE_INSTR: CALL printStr(" ")
+}
+  END_IF 
+{
+    TREE_INSTR: CALL printInt((a PLUS b))
+    TREE_INSTR: CALL printStr(" ")
+}
+  TREE_WHILE: CONDITION: (x NE_OP 5)
+{
+    TREE_INSTR: CALL printInt(x)
+    TREE_INSTR: CALL printStr(" ")
+    TREE_INSTR: x = (x PLUS 1)
+}
+  END_WHILE 
+    TREE_INSTR: CALL printLn()
+}
+END_PROC
+
+** Executing test03.class **
+Results should be : 2 7 1 2 3 4 
+2 7 1 2 3 4 

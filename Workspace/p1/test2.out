@@ -1,0 +1,25 @@
+1: 
+2: //------ test legal statements -------
+3: 
+4: void
+5: grammarTest() {
+6:   int x,y,z;
+7: 
+8:   // test control flow
+9:   if (x == 1) 
+10:     { z = 1; }
+11:   else
+12:     { z = 2; }
+13: 
+14:   while (x < 6) 
+15:     { x = x + 1; }
+16: 
+17:   // test relational & logical expressions
+18: 
+19:   if ( (x == y) && (1 > z) ) 
+20:     { z = 5; }
+21: 
+22:   if ( !(x != z) ) 
+23:     { y = 2; }
+24: }
+25: 

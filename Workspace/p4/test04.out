@@ -1,0 +1,908 @@
+1: 
+2: //  Sieve of Erastothenes
+3: 
+4: int num[100];
+5: int maxNum;
+6: 
+7: void main()
+8: {
+9:      int i, j;
+10: 
+11:      printStr("Result should be:");
+12:      printLn();
+13:      printStr("1 2 3 5 7 11 13 17 19 23 29 31 37 41 43 47 53 59 61 67 71 73 79 83 89 97"); 
+14:      printLn();
+15: 
+16:      maxNum = 100;
+17: 
+18:      i = 1;
+19:      while ( i < maxNum )
+20:      {
+21:          num[i] = 0;
+22:          i = i + 1;
+23:      }
+24:      
+25:      j = 2;
+26:      while ( j < maxNum )
+27:      {
+28:          i = j + j;
+29:          while ( i < maxNum )
+30:          {
+31:              num[i] = num[i] + 1;
+32:              i = i + j;
+33:          }
+34: 
+35:          j = j + 1;
+36:          while (( j < maxNum ) && ( num[j] > 0 ))
+37:          {
+38:              j = j + 1;
+39:          }
+40:      }
+41: 
+42:      i = 1;
+43:      while ( i < maxNum )
+44:      {
+45:          if ( num[i] == 0 )
+46:          {
+47:              printInt(i);
+48:              printStr(" ");
+49:          }
+50:          i = i + 1;
+51:      }
+52:      printLn();
+53:      
+54:      return;
+55: }
+56: 
+57: 
+** Global Variables **
+num, int, array
+printLn, void, function, param = <void>
+main, void, function, param = <void>
+printStr, void, function, param = String
+maxNum, int
+printInt, void, function, param = int
+** Local Variables in main() **
+i, int
+j, int
+TREE_PROC: main
+{
+    TREE_INSTR: CALL printStr("Result should be:")
+    TREE_INSTR: CALL printLn()
+    TREE_INSTR: CALL printStr("1 2 3 5 7 11 13 17 19 23 29 31 37 41 43 47 53 59 61 67 71 73 79 83 89 97")
+    TREE_INSTR: CALL printLn()
+    TREE_INSTR: maxNum = 100
+    TREE_INSTR: i = 1
+  TREE_WHILE: CONDITION: (i LESS maxNum)
+{
+    TREE_INSTR: num[i] = 0
+    TREE_INSTR: i = (i PLUS 1)
+}
+  END_WHILE 
+    TREE_INSTR: j = 2
+  TREE_WHILE: CONDITION: (j LESS maxNum)
+{
+    TREE_INSTR: i = (j PLUS j)
+  TREE_WHILE: CONDITION: (i LESS maxNum)
+{
+    TREE_INSTR: num[i] = (num[i] PLUS 1)
+    TREE_INSTR: i = (i PLUS j)
+}
+  END_WHILE 
+    TREE_INSTR: j = (j PLUS 1)
+  TREE_WHILE: CONDITION: ((j LESS maxNum) AND_OP (num[j] GR 0))
+{
+    TREE_INSTR: j = (j PLUS 1)
+}
+  END_WHILE 
+}
+  END_WHILE 
+    TREE_INSTR: i = 1
+  TREE_WHILE: CONDITION: (i LESS maxNum)
+{
+  TREE_IF: CONDITION: (num[i] EQ_OP 0)
+{
+    TREE_INSTR: CALL printInt(i)
+    TREE_INSTR: CALL printStr(" ")
+}
+  END_IF 
+    TREE_INSTR: i = (i PLUS 1)
+}
+  END_WHILE 
+    TREE_INSTR: CALL printLn()
+    TREE_INSTR:  RETURN 
+}
+END_PROC
+
+** Basic block: 0 **
+  Length: 1  Successors:  1  Predecessors:
+  GEN {}  KILL {}  IN {}  OUT {}
+>     0: bipush 100
+** Basic block: 1 **
+  Length: 1  Successors:  2  Predecessors: 0
+  GEN {}  KILL {}  IN {}  OUT {}
+>     2: newarray int
+** Basic block: 2 **
+  Length: 1  Successors:  3  Predecessors: 1
+  GEN {}  KILL {}  IN {}  OUT {}
+>     4: putstatic 16
+** Basic block: 3 **
+  Length: 1  Successors:  4  Predecessors: 2
+  GEN {}  KILL {}  IN {}  OUT {}
+>     7: getstatic 12
+** Basic block: 4 **
+  Length: 1  Successors:  5  Predecessors: 3
+  GEN {}  KILL {}  IN {}  OUT {}
+>    10: ldc 39
+** Basic block: 5 **
+  Length: 1  Successors:  6  Predecessors: 4
+  GEN {}  KILL {}  IN {}  OUT {}
+>    12: invokevirtual 30
+** Basic block: 6 **
+  Length: 1  Successors:  7  Predecessors: 5
+  GEN {}  KILL {}  IN {}  OUT {}
+>    15: getstatic 12
+** Basic block: 7 **
+  Length: 1  Successors:  8  Predecessors: 6
+  GEN {}  KILL {}  IN {}  OUT {}
+>    18: invokevirtual 22
+** Basic block: 8 **
+  Length: 1  Successors:  9  Predecessors: 7
+  GEN {}  KILL {}  IN {}  OUT {}
+>    21: getstatic 12
+** Basic block: 9 **
+  Length: 1  Successors:  10  Predecessors: 8
+  GEN {}  KILL {}  IN {}  OUT {}
+>    24: ldc 41
+** Basic block: 10 **
+  Length: 1  Successors:  11  Predecessors: 9
+  GEN {}  KILL {}  IN {}  OUT {}
+>    26: invokevirtual 30
+** Basic block: 11 **
+  Length: 1  Successors:  12  Predecessors: 10
+  GEN {}  KILL {}  IN {}  OUT {}
+>    29: getstatic 12
+** Basic block: 12 **
+  Length: 1  Successors:  13  Predecessors: 11
+  GEN {}  KILL {}  IN {}  OUT {}
+>    32: invokevirtual 22
+** Basic block: 13 **
+  Length: 1  Successors:  14  Predecessors: 12
+  GEN {}  KILL {}  IN {}  OUT {}
+>    35: bipush 100
+** Basic block: 14 **
+  Length: 1  Successors:  15  Predecessors: 13
+  GEN {}  KILL {}  IN {}  OUT {}
+>    37: putstatic 34
+** Basic block: 15 **
+  Length: 1  Successors:  16  Predecessors: 14
+  GEN {}  KILL {}  IN {}  OUT {}
+>    40: iconst_1
+** Basic block: 16 **
+  Length: 1  Successors:  17  Predecessors: 15
+  GEN {}  KILL {1}  IN {}  OUT {1}
+>    41: istore_1
+** Basic block: 17 **
+  Length: 1  Successors:  18  Predecessors: 16 32
+  GEN {1}  KILL {}  IN {1}  OUT {1}
+>    43: iload_1
+** Basic block: 18 **
+  Length: 1  Successors:  19  Predecessors: 17
+  GEN {}  KILL {}  IN {1}  OUT {1}
+>    44: getstatic 34
+** Basic block: 19 **
+  Length: 1  Successors:  20 22  Predecessors: 18
+  GEN {}  KILL {}  IN {1}  OUT {1}
+>    47: if_icmplt -> 55
+** Basic block: 20 **
+  Length: 1  Successors:  21  Predecessors: 19
+  GEN {}  KILL {}  IN {1}  OUT {1}
+>    50: iconst_0
+** Basic block: 21 **
+  Length: 1  Successors:  23  Predecessors: 20
+  GEN {}  KILL {}  IN {1}  OUT {1}
+>    51: goto -> 57
+** Basic block: 22 **
+  Length: 1  Successors:  23  Predecessors: 19
+  GEN {}  KILL {}  IN {1}  OUT {1}
+>    55: iconst_1
+** Basic block: 23 **
+  Length: 1  Successors:  24 33  Predecessors: 21 22
+  GEN {}  KILL {}  IN {1}  OUT {1}
+>    57: ifeq -> 74
+** Basic block: 24 **
+  Length: 1  Successors:  25  Predecessors: 23
+  GEN {}  KILL {}  IN {1}  OUT {1}
+>    60: getstatic 16
+** Basic block: 25 **
+  Length: 1  Successors:  26  Predecessors: 24
+  GEN {1}  KILL {}  IN {1}  OUT {1}
+>    63: iload_1
+** Basic block: 26 **
+  Length: 1  Successors:  27  Predecessors: 25
+  GEN {}  KILL {}  IN {1}  OUT {1}
+>    64: iconst_0
+** Basic block: 27 **
+  Length: 1  Successors:  28  Predecessors: 26
+  GEN {}  KILL {}  IN {1}  OUT {1}
+>    65: iastore
+** Basic block: 28 **
+  Length: 1  Successors:  29  Predecessors: 27
+  GEN {1}  KILL {}  IN {1}  OUT {}
+>    66: iload_1
+** Basic block: 29 **
+  Length: 1  Successors:  30  Predecessors: 28
+  GEN {}  KILL {}  IN {}  OUT {}
+>    67: iconst_1
+** Basic block: 30 **
+  Length: 1  Successors:  31  Predecessors: 29
+  GEN {}  KILL {}  IN {}  OUT {}
+>    68: iadd
+** Basic block: 31 **
+  Length: 1  Successors:  32  Predecessors: 30
+  GEN {}  KILL {1}  IN {}  OUT {1}
+>    69: istore_1
+** Basic block: 32 **
+  Length: 1  Successors:  17  Predecessors: 31
+  GEN {}  KILL {}  IN {1}  OUT {1}
+>    70: goto -> 43
+** Basic block: 33 **
+  Length: 1  Successors:  34  Predecessors: 23
+  GEN {}  KILL {}  IN {}  OUT {}
+>    74: iconst_2
+** Basic block: 34 **
+  Length: 1  Successors:  35  Predecessors: 33
+  GEN {}  KILL {2}  IN {}  OUT {2}
+>    75: istore_2
+** Basic block: 35 **
+  Length: 1  Successors:  36  Predecessors: 34 93
+  GEN {2}  KILL {}  IN {2}  OUT {2}
+>    77: iload_2
+** Basic block: 36 **
+  Length: 1  Successors:  37  Predecessors: 35
+  GEN {}  KILL {}  IN {2}  OUT {2}
+>    78: getstatic 34
+** Basic block: 37 **
+  Length: 1  Successors:  38 40  Predecessors: 36
+  GEN {}  KILL {}  IN {2}  OUT {2}
+>    81: if_icmplt -> 89
+** Basic block: 38 **
+  Length: 1  Successors:  39  Predecessors: 37
+  GEN {}  KILL {}  IN {2}  OUT {2}
+>    84: iconst_0
+** Basic block: 39 **
+  Length: 1  Successors:  41  Predecessors: 38
+  GEN {}  KILL {}  IN {2}  OUT {2}
+>    85: goto -> 91
+** Basic block: 40 **
+  Length: 1  Successors:  41  Predecessors: 37
+  GEN {}  KILL {}  IN {2}  OUT {2}
+>    89: iconst_1
+** Basic block: 41 **
+  Length: 1  Successors:  42 94  Predecessors: 39 40
+  GEN {}  KILL {}  IN {2}  OUT {2}
+>    91: ifeq -> 192
+** Basic block: 42 **
+  Length: 1  Successors:  43  Predecessors: 41
+  GEN {2}  KILL {}  IN {2}  OUT {2}
+>    94: iload_2
+** Basic block: 43 **
+  Length: 1  Successors:  44  Predecessors: 42
+  GEN {2}  KILL {}  IN {2}  OUT {2}
+>    95: iload_2
+** Basic block: 44 **
+  Length: 1  Successors:  45  Predecessors: 43
+  GEN {}  KILL {}  IN {2}  OUT {2}
+>    96: iadd
+** Basic block: 45 **
+  Length: 1  Successors:  46  Predecessors: 44
+  GEN {}  KILL {1}  IN {2}  OUT {1, 2}
+>    97: istore_1
+** Basic block: 46 **
+  Length: 1  Successors:  47  Predecessors: 45 65
+  GEN {1}  KILL {}  IN {1, 2}  OUT {1, 2}
+>    99: iload_1
+** Basic block: 47 **
+  Length: 1  Successors:  48  Predecessors: 46
+  GEN {}  KILL {}  IN {1, 2}  OUT {1, 2}
+>   100: getstatic 34
+** Basic block: 48 **
+  Length: 1  Successors:  49 51  Predecessors: 47
+  GEN {}  KILL {}  IN {1, 2}  OUT {1, 2}
+>   103: if_icmplt -> 111
+** Basic block: 49 **
+  Length: 1  Successors:  50  Predecessors: 48
+  GEN {}  KILL {}  IN {1, 2}  OUT {1, 2}
+>   106: iconst_0
+** Basic block: 50 **
+  Length: 1  Successors:  52  Predecessors: 49
+  GEN {}  KILL {}  IN {1, 2}  OUT {1, 2}
+>   107: goto -> 113
+** Basic block: 51 **
+  Length: 1  Successors:  52  Predecessors: 48
+  GEN {}  KILL {}  IN {1, 2}  OUT {1, 2}
+>   111: iconst_1
+** Basic block: 52 **
+  Length: 1  Successors:  53 66  Predecessors: 50 51
+  GEN {}  KILL {}  IN {1, 2}  OUT {1, 2}
+>   113: ifeq -> 136
+** Basic block: 53 **
+  Length: 1  Successors:  54  Predecessors: 52
+  GEN {}  KILL {}  IN {1, 2}  OUT {1, 2}
+>   116: getstatic 16
+** Basic block: 54 **
+  Length: 1  Successors:  55  Predecessors: 53
+  GEN {1}  KILL {}  IN {1, 2}  OUT {1, 2}
+>   119: iload_1
+** Basic block: 55 **
+  Length: 1  Successors:  56  Predecessors: 54
+  GEN {}  KILL {}  IN {1, 2}  OUT {1, 2}
+>   120: getstatic 16
+** Basic block: 56 **
+  Length: 1  Successors:  57  Predecessors: 55
+  GEN {1}  KILL {}  IN {1, 2}  OUT {1, 2}
+>   123: iload_1
+** Basic block: 57 **
+  Length: 1  Successors:  58  Predecessors: 56
+  GEN {}  KILL {}  IN {1, 2}  OUT {1, 2}
+>   124: iaload
+** Basic block: 58 **
+  Length: 1  Successors:  59  Predecessors: 57
+  GEN {}  KILL {}  IN {1, 2}  OUT {1, 2}
+>   125: iconst_1
+** Basic block: 59 **
+  Length: 1  Successors:  60  Predecessors: 58
+  GEN {}  KILL {}  IN {1, 2}  OUT {1, 2}
+>   126: iadd
+** Basic block: 60 **
+  Length: 1  Successors:  61  Predecessors: 59
+  GEN {}  KILL {}  IN {1, 2}  OUT {1, 2}
+>   127: iastore
+** Basic block: 61 **
+  Length: 1  Successors:  62  Predecessors: 60
+  GEN {1}  KILL {}  IN {1, 2}  OUT {2}
+>   128: iload_1
+** Basic block: 62 **
+  Length: 1  Successors:  63  Predecessors: 61
+  GEN {2}  KILL {}  IN {2}  OUT {2}
+>   129: iload_2
+** Basic block: 63 **
+  Length: 1  Successors:  64  Predecessors: 62
+  GEN {}  KILL {}  IN {2}  OUT {2}
+>   130: iadd
+** Basic block: 64 **
+  Length: 1  Successors:  65  Predecessors: 63
+  GEN {}  KILL {1}  IN {2}  OUT {1, 2}
+>   131: istore_1
+** Basic block: 65 **
+  Length: 1  Successors:  46  Predecessors: 64
+  GEN {}  KILL {}  IN {1, 2}  OUT {1, 2}
+>   132: goto -> 99
+** Basic block: 66 **
+  Length: 1  Successors:  67  Predecessors: 52
+  GEN {2}  KILL {}  IN {2}  OUT {}
+>   136: iload_2
+** Basic block: 67 **
+  Length: 1  Successors:  68  Predecessors: 66
+  GEN {}  KILL {}  IN {}  OUT {}
+>   137: iconst_1
+** Basic block: 68 **
+  Length: 1  Successors:  69  Predecessors: 67
+  GEN {}  KILL {}  IN {}  OUT {}
+>   138: iadd
+** Basic block: 69 **
+  Length: 1  Successors:  70  Predecessors: 68
+  GEN {}  KILL {2}  IN {}  OUT {2}
+>   139: istore_2
+** Basic block: 70 **
+  Length: 1  Successors:  71  Predecessors: 69 92
+  GEN {2}  KILL {}  IN {2}  OUT {2}
+>   141: iload_2
+** Basic block: 71 **
+  Length: 1  Successors:  72  Predecessors: 70
+  GEN {}  KILL {}  IN {2}  OUT {2}
+>   142: getstatic 34
+** Basic block: 72 **
+  Length: 1  Successors:  73 75  Predecessors: 71
+  GEN {}  KILL {}  IN {2}  OUT {2}
+>   145: if_icmplt -> 153
+** Basic block: 73 **
+  Length: 1  Successors:  74  Predecessors: 72
+  GEN {}  KILL {}  IN {2}  OUT {2}
+>   148: iconst_0
+** Basic block: 74 **
+  Length: 1  Successors:  76  Predecessors: 73
+  GEN {}  KILL {}  IN {2}  OUT {2}
+>   149: goto -> 155
+** Basic block: 75 **
+  Length: 1  Successors:  76  Predecessors: 72
+  GEN {}  KILL {}  IN {2}  OUT {2}
+>   153: iconst_1
+** Basic block: 76 **
+  Length: 1  Successors:  77  Predecessors: 74 75
+  GEN {}  KILL {}  IN {2}  OUT {2}
+>   155: dup
+** Basic block: 77 **
+  Length: 1  Successors:  78 87  Predecessors: 76
+  GEN {}  KILL {}  IN {2}  OUT {2}
+>   156: ifeq -> 177
+** Basic block: 78 **
+  Length: 1  Successors:  79  Predecessors: 77
+  GEN {}  KILL {}  IN {2}  OUT {2}
+>   159: pop
+** Basic block: 79 **
+  Length: 1  Successors:  80  Predecessors: 78
+  GEN {}  KILL {}  IN {2}  OUT {2}
+>   160: getstatic 16
+** Basic block: 80 **
+  Length: 1  Successors:  81  Predecessors: 79
+  GEN {2}  KILL {}  IN {2}  OUT {2}
+>   163: iload_2
+** Basic block: 81 **
+  Length: 1  Successors:  82  Predecessors: 80
+  GEN {}  KILL {}  IN {2}  OUT {2}
+>   164: iaload
+** Basic block: 82 **
+  Length: 1  Successors:  83  Predecessors: 81
+  GEN {}  KILL {}  IN {2}  OUT {2}
+>   165: iconst_0
+** Basic block: 83 **
+  Length: 1  Successors:  84 86  Predecessors: 82
+  GEN {}  KILL {}  IN {2}  OUT {2}
+>   166: if_icmpgt -> 174
+** Basic block: 84 **
+  Length: 1  Successors:  85  Predecessors: 83
+  GEN {}  KILL {}  IN {2}  OUT {2}
+>   169: iconst_0
+** Basic block: 85 **
+  Length: 1  Successors:  87  Predecessors: 84
+  GEN {}  KILL {}  IN {2}  OUT {2}
+>   170: goto -> 177
+** Basic block: 86 **
+  Length: 1  Successors:  87  Predecessors: 83
+  GEN {}  KILL {}  IN {2}  OUT {2}
+>   174: iconst_1
+** Basic block: 87 **
+  Length: 1  Successors:  88 93  Predecessors: 77 85 86
+  GEN {}  KILL {}  IN {2}  OUT {2}
+>   177: ifeq -> 188
+** Basic block: 88 **
+  Length: 1  Successors:  89  Predecessors: 87
+  GEN {2}  KILL {}  IN {2}  OUT {}
+>   180: iload_2
+** Basic block: 89 **
+  Length: 1  Successors:  90  Predecessors: 88
+  GEN {}  KILL {}  IN {}  OUT {}
+>   181: iconst_1
+** Basic block: 90 **
+  Length: 1  Successors:  91  Predecessors: 89
+  GEN {}  KILL {}  IN {}  OUT {}
+>   182: iadd
+** Basic block: 91 **
+  Length: 1  Successors:  92  Predecessors: 90
+  GEN {}  KILL {2}  IN {}  OUT {2}
+>   183: istore_2
+** Basic block: 92 **
+  Length: 1  Successors:  70  Predecessors: 91
+  GEN {}  KILL {}  IN {2}  OUT {2}
+>   184: goto -> 141
+** Basic block: 93 **
+  Length: 1  Successors:  35  Predecessors: 87
+  GEN {}  KILL {}  IN {2}  OUT {2}
+>   188: goto -> 77
+** Basic block: 94 **
+  Length: 1  Successors:  95  Predecessors: 41
+  GEN {}  KILL {}  IN {}  OUT {}
+>   192: iconst_1
+** Basic block: 95 **
+  Length: 1  Successors:  96  Predecessors: 94
+  GEN {}  KILL {1}  IN {}  OUT {1}
+>   193: istore_1
+** Basic block: 96 **
+  Length: 1  Successors:  97  Predecessors: 95 122
+  GEN {1}  KILL {}  IN {1}  OUT {1}
+>   195: iload_1
+** Basic block: 97 **
+  Length: 1  Successors:  98  Predecessors: 96
+  GEN {}  KILL {}  IN {1}  OUT {1}
+>   196: getstatic 34
+** Basic block: 98 **
+  Length: 1  Successors:  99 101  Predecessors: 97
+  GEN {}  KILL {}  IN {1}  OUT {1}
+>   199: if_icmplt -> 207
+** Basic block: 99 **
+  Length: 1  Successors:  100  Predecessors: 98
+  GEN {}  KILL {}  IN {1}  OUT {1}
+>   202: iconst_0
+** Basic block: 100 **
+  Length: 1  Successors:  102  Predecessors: 99
+  GEN {}  KILL {}  IN {1}  OUT {1}
+>   203: goto -> 209
+** Basic block: 101 **
+  Length: 1  Successors:  102  Predecessors: 98
+  GEN {}  KILL {}  IN {1}  OUT {1}
+>   207: iconst_1
+** Basic block: 102 **
+  Length: 1  Successors:  103 123  Predecessors: 100 101
+  GEN {}  KILL {}  IN {1}  OUT {1}
+>   209: ifeq -> 255
+** Basic block: 103 **
+  Length: 1  Successors:  104  Predecessors: 102
+  GEN {}  KILL {}  IN {1}  OUT {1}
+>   212: getstatic 16
+** Basic block: 104 **
+  Length: 1  Successors:  105  Predecessors: 103
+  GEN {1}  KILL {}  IN {1}  OUT {1}
+>   215: iload_1
+** Basic block: 105 **
+  Length: 1  Successors:  106  Predecessors: 104
+  GEN {}  KILL {}  IN {1}  OUT {1}
+>   216: iaload
+** Basic block: 106 **
+  Length: 1  Successors:  107  Predecessors: 105
+  GEN {}  KILL {}  IN {1}  OUT {1}
+>   217: iconst_0
+** Basic block: 107 **
+  Length: 1  Successors:  108 110  Predecessors: 106
+  GEN {}  KILL {}  IN {1}  OUT {1}
+>   218: if_icmpeq -> 226
+** Basic block: 108 **
+  Length: 1  Successors:  109  Predecessors: 107
+  GEN {}  KILL {}  IN {1}  OUT {1}
+>   221: iconst_0
+** Basic block: 109 **
+  Length: 1  Successors:  111  Predecessors: 108
+  GEN {}  KILL {}  IN {1}  OUT {1}
+>   222: goto -> 228
+** Basic block: 110 **
+  Length: 1  Successors:  111  Predecessors: 107
+  GEN {}  KILL {}  IN {1}  OUT {1}
+>   226: iconst_1
+** Basic block: 111 **
+  Length: 1  Successors:  112 118  Predecessors: 109 110
+  GEN {}  KILL {}  IN {1}  OUT {1}
+>   228: ifeq -> 247
+** Basic block: 112 **
+  Length: 1  Successors:  113  Predecessors: 111
+  GEN {}  KILL {}  IN {1}  OUT {1}
+>   231: getstatic 12
+** Basic block: 113 **
+  Length: 1  Successors:  114  Predecessors: 112
+  GEN {1}  KILL {}  IN {1}  OUT {1}
+>   234: iload_1
+** Basic block: 114 **
+  Length: 1  Successors:  115  Predecessors: 113
+  GEN {}  KILL {}  IN {1}  OUT {1}
+>   235: invokevirtual 37
+** Basic block: 115 **
+  Length: 1  Successors:  116  Predecessors: 114
+  GEN {}  KILL {}  IN {1}  OUT {1}
+>   238: getstatic 12
+** Basic block: 116 **
+  Length: 1  Successors:  117  Predecessors: 115
+  GEN {}  KILL {}  IN {1}  OUT {1}
+>   241: ldc 43
+** Basic block: 117 **
+  Length: 1  Successors:  118  Predecessors: 116
+  GEN {}  KILL {}  IN {1}  OUT {1}
+>   243: invokevirtual 30
+** Basic block: 118 **
+  Length: 1  Successors:  119  Predecessors: 111 117
+  GEN {1}  KILL {}  IN {1}  OUT {}
+>   247: iload_1
+** Basic block: 119 **
+  Length: 1  Successors:  120  Predecessors: 118
+  GEN {}  KILL {}  IN {}  OUT {}
+>   248: iconst_1
+** Basic block: 120 **
+  Length: 1  Successors:  121  Predecessors: 119
+  GEN {}  KILL {}  IN {}  OUT {}
+>   249: iadd
+** Basic block: 121 **
+  Length: 1  Successors:  122  Predecessors: 120
+  GEN {}  KILL {1}  IN {}  OUT {1}
+>   250: istore_1
+** Basic block: 122 **
+  Length: 1  Successors:  96  Predecessors: 121
+  GEN {}  KILL {}  IN {1}  OUT {1}
+>   251: goto -> 195
+** Basic block: 123 **
+  Length: 1  Successors:  124  Predecessors: 102
+  GEN {}  KILL {}  IN {}  OUT {}
+>   255: getstatic 12
+** Basic block: 124 **
+  Length: 1  Successors:  125  Predecessors: 123
+  GEN {}  KILL {}  IN {}  OUT {}
+>   258: invokevirtual 22
+** Basic block: 125 **
+  Length: 1  Successors:  127  Predecessors: 124
+  GEN {}  KILL {}  IN {}  OUT {}
+>   261: return
+** Basic block: 126 **
+  Length: 1  Successors:  127  Predecessors:
+  GEN {}  KILL {}  IN {}  OUT {}
+>   262: return
+** Basic block: 127 **
+  Length: 0  Successors:   Predecessors: 125 126
+  GEN {}  KILL {}  IN {}  OUT {}
+
+<<---- Live Ranges ---->>
+[B 0]  [Live          ]   0: bipush 100
+[B 1]  [Live          ]   2: newarray int
+[B 2]  [Live          ]   4: putstatic 16
+[B 3]  [Live          ]   7: getstatic 12
+[B 4]  [Live          ]  10: ldc 39
+[B 5]  [Live          ]  12: invokevirtual 30
+[B 6]  [Live          ]  15: getstatic 12
+[B 7]  [Live          ]  18: invokevirtual 22
+[B 8]  [Live          ]  21: getstatic 12
+[B 9]  [Live          ]  24: ldc 41
+[B 10] [Live          ]  26: invokevirtual 30
+[B 11] [Live          ]  29: getstatic 12
+[B 12] [Live          ]  32: invokevirtual 22
+[B 13] [Live          ]  35: bipush 100
+[B 14] [Live          ]  37: putstatic 34
+[B 15] [Live          ]  40: iconst_1
+[B 16] [Live          ]  41: istore_1
+[B 17] [Live     1    ]  43: iload_1
+[B 18] [Live     1    ]  44: getstatic 34
+[B 19] [Live     1    ]  47: if_icmplt -> 55
+[B 20] [Live     1    ]  50: iconst_0
+[B 21] [Live     1    ]  51: goto -> 57
+[B 22] [Live     1    ]  55: iconst_1
+[B 23] [Live     1    ]  57: ifeq -> 74
+[B 24] [Live     1    ]  60: getstatic 16
+[B 25] [Live     1    ]  63: iload_1
+[B 26] [Live     1    ]  64: iconst_0
+[B 27] [Live     1    ]  65: iastore
+[B 28] [Live     1    ]  66: iload_1
+[B 29] [Live          ]  67: iconst_1
+[B 30] [Live          ]  68: iadd
+[B 31] [Live          ]  69: istore_1
+[B 32] [Live     1    ]  70: goto -> 43
+[B 33] [Live          ]  74: iconst_2
+[B 34] [Live          ]  75: istore_2
+[B 35] [Live        2 ]  77: iload_2
+[B 36] [Live        2 ]  78: getstatic 34
+[B 37] [Live        2 ]  81: if_icmplt -> 89
+[B 38] [Live        2 ]  84: iconst_0
+[B 39] [Live        2 ]  85: goto -> 91
+[B 40] [Live        2 ]  89: iconst_1
+[B 41] [Live        2 ]  91: ifeq -> 192
+[B 42] [Live        2 ]  94: iload_2
+[B 43] [Live        2 ]  95: iload_2
+[B 44] [Live        2 ]  96: iadd
+[B 45] [Live        2 ]  97: istore_1
+[B 46] [Live     1  2 ]  99: iload_1
+[B 47] [Live     1  2 ] 100: getstatic 34
+[B 48] [Live     1  2 ] 103: if_icmplt -> 111
+[B 49] [Live     1  2 ] 106: iconst_0
+[B 50] [Live     1  2 ] 107: goto -> 113
+[B 51] [Live     1  2 ] 111: iconst_1
+[B 52] [Live     1  2 ] 113: ifeq -> 136
+[B 53] [Live     1  2 ] 116: getstatic 16
+[B 54] [Live     1  2 ] 119: iload_1
+[B 55] [Live     1  2 ] 120: getstatic 16
+[B 56] [Live     1  2 ] 123: iload_1
+[B 57] [Live     1  2 ] 124: iaload
+[B 58] [Live     1  2 ] 125: iconst_1
+[B 59] [Live     1  2 ] 126: iadd
+[B 60] [Live     1  2 ] 127: iastore
+[B 61] [Live     1  2 ] 128: iload_1
+[B 62] [Live        2 ] 129: iload_2
+[B 63] [Live        2 ] 130: iadd
+[B 64] [Live        2 ] 131: istore_1
+[B 65] [Live     1  2 ] 132: goto -> 99
+[B 66] [Live        2 ] 136: iload_2
+[B 67] [Live          ] 137: iconst_1
+[B 68] [Live          ] 138: iadd
+[B 69] [Live          ] 139: istore_2
+[B 70] [Live        2 ] 141: iload_2
+[B 71] [Live        2 ] 142: getstatic 34
+[B 72] [Live        2 ] 145: if_icmplt -> 153
+[B 73] [Live        2 ] 148: iconst_0
+[B 74] [Live        2 ] 149: goto -> 155
+[B 75] [Live        2 ] 153: iconst_1
+[B 76] [Live        2 ] 155: dup
+[B 77] [Live        2 ] 156: ifeq -> 177
+[B 78] [Live        2 ] 159: pop
+[B 79] [Live        2 ] 160: getstatic 16
+[B 80] [Live        2 ] 163: iload_2
+[B 81] [Live        2 ] 164: iaload
+[B 82] [Live        2 ] 165: iconst_0
+[B 83] [Live        2 ] 166: if_icmpgt -> 174
+[B 84] [Live        2 ] 169: iconst_0
+[B 85] [Live        2 ] 170: goto -> 177
+[B 86] [Live        2 ] 174: iconst_1
+[B 87] [Live        2 ] 177: ifeq -> 188
+[B 88] [Live        2 ] 180: iload_2
+[B 89] [Live          ] 181: iconst_1
+[B 90] [Live          ] 182: iadd
+[B 91] [Live          ] 183: istore_2
+[B 92] [Live        2 ] 184: goto -> 141
+[B 93] [Live        2 ] 188: goto -> 77
+[B 94] [Live          ] 192: iconst_1
+[B 95] [Live          ] 193: istore_1
+[B 96] [Live     1    ] 195: iload_1
+[B 97] [Live     1    ] 196: getstatic 34
+[B 98] [Live     1    ] 199: if_icmplt -> 207
+[B 99] [Live     1    ] 202: iconst_0
+[B 100][Live     1    ] 203: goto -> 209
+[B 101][Live     1    ] 207: iconst_1
+[B 102][Live     1    ] 209: ifeq -> 255
+[B 103][Live     1    ] 212: getstatic 16
+[B 104][Live     1    ] 215: iload_1
+[B 105][Live     1    ] 216: iaload
+[B 106][Live     1    ] 217: iconst_0
+[B 107][Live     1    ] 218: if_icmpeq -> 226
+[B 108][Live     1    ] 221: iconst_0
+[B 109][Live     1    ] 222: goto -> 228
+[B 110][Live     1    ] 226: iconst_1
+[B 111][Live     1    ] 228: ifeq -> 247
+[B 112][Live     1    ] 231: getstatic 12
+[B 113][Live     1    ] 234: iload_1
+[B 114][Live     1    ] 235: invokevirtual 37
+[B 115][Live     1    ] 238: getstatic 12
+[B 116][Live     1    ] 241: ldc 43
+[B 117][Live     1    ] 243: invokevirtual 30
+[B 118][Live     1    ] 247: iload_1
+[B 119][Live          ] 248: iconst_1
+[B 120][Live          ] 249: iadd
+[B 121][Live          ] 250: istore_1
+[B 122][Live     1    ] 251: goto -> 195
+[B 123][Live          ] 255: getstatic 12
+[B 124][Live          ] 258: invokevirtual 22
+[B 125][Live          ] 261: return
+[B 126][Live          ] 262: return
+<<---- Local Variables in main() ---->>
+LocalVariable(start_pc = 4, length = 232, index = 0:String[] argv)
+LocalVariable(start_pc = 0, length = 236, index = 1:int i)
+LocalVariable(start_pc = 0, length = 236, index = 2:int j)
+<<---- Global Variables ---->>
+public static int[] num
+public static int maxNum
+
+Compiled from "<generated>"
+public class test4 extends java.lang.Object{
+public static int[] num;
+
+public static int maxNum;
+
+public static void main(java.lang.String[]);
+  Code:
+   0:	bipush	100
+   2:	newarray int
+   4:	putstatic	#16; //Field num:[I
+   7:	getstatic	#12; //Field java/lang/System.out:Ljava/io/PrintStream;
+   10:	ldc	#39; //String Result should be:
+   12:	invokevirtual	#30; //Method java/io/PrintStream.print:(Ljava/lang/String;)V
+   15:	getstatic	#12; //Field java/lang/System.out:Ljava/io/PrintStream;
+   18:	invokevirtual	#22; //Method java/io/PrintStream.println:()V
+   21:	getstatic	#12; //Field java/lang/System.out:Ljava/io/PrintStream;
+   24:	ldc	#41; //String 1 2 3 5 7 11 13 17 19 23 29 31 37 41 43 47 53 59 61 67 71 73 79 83 89 97
+   26:	invokevirtual	#30; //Method java/io/PrintStream.print:(Ljava/lang/String;)V
+   29:	getstatic	#12; //Field java/lang/System.out:Ljava/io/PrintStream;
+   32:	invokevirtual	#22; //Method java/io/PrintStream.println:()V
+   35:	bipush	100
+   37:	putstatic	#34; //Field maxNum:I
+   40:	iconst_1
+   41:	istore_1
+   42:	iload_1
+   43:	getstatic	#34; //Field maxNum:I
+   46:	if_icmplt	53
+   49:	iconst_0
+   50:	goto	54
+   53:	iconst_1
+   54:	ifeq	70
+   57:	getstatic	#16; //Field num:[I
+   60:	iload_1
+   61:	iconst_0
+   62:	iastore
+   63:	iload_1
+   64:	iconst_1
+   65:	iadd
+   66:	istore_1
+   67:	goto	42
+   70:	iconst_2
+   71:	istore_2
+   72:	iload_2
+   73:	getstatic	#34; //Field maxNum:I
+   76:	if_icmplt	83
+   79:	iconst_0
+   80:	goto	84
+   83:	iconst_1
+   84:	ifeq	173
+   87:	iload_2
+   88:	iload_2
+   89:	iadd
+   90:	istore_1
+   91:	iload_1
+   92:	getstatic	#34; //Field maxNum:I
+   95:	if_icmplt	102
+   98:	iconst_0
+   99:	goto	103
+   102:	iconst_1
+   103:	ifeq	125
+   106:	getstatic	#16; //Field num:[I
+   109:	iload_1
+   110:	getstatic	#16; //Field num:[I
+   113:	iload_1
+   114:	iaload
+   115:	iconst_1
+   116:	iadd
+   117:	iastore
+   118:	iload_1
+   119:	iload_2
+   120:	iadd
+   121:	istore_1
+   122:	goto	91
+   125:	iload_2
+   126:	iconst_1
+   127:	iadd
+   128:	istore_2
+   129:	iload_2
+   130:	getstatic	#34; //Field maxNum:I
+   133:	if_icmplt	140
+   136:	iconst_0
+   137:	goto	141
+   140:	iconst_1
+   141:	dup
+   142:	ifeq	160
+   145:	pop
+   146:	getstatic	#16; //Field num:[I
+   149:	iload_2
+   150:	iaload
+   151:	iconst_0
+   152:	if_icmpgt	159
+   155:	iconst_0
+   156:	goto	160
+   159:	iconst_1
+   160:	ifeq	170
+   163:	iload_2
+   164:	iconst_1
+   165:	iadd
+   166:	istore_2
+   167:	goto	129
+   170:	goto	72
+   173:	iconst_1
+   174:	istore_1
+   175:	iload_1
+   176:	getstatic	#34; //Field maxNum:I
+   179:	if_icmplt	186
+   182:	iconst_0
+   183:	goto	187
+   186:	iconst_1
+   187:	ifeq	229
+   190:	getstatic	#16; //Field num:[I
+   193:	iload_1
+   194:	iaload
+   195:	iconst_0
+   196:	if_icmpeq	203
+   199:	iconst_0
+   200:	goto	204
+   203:	iconst_1
+   204:	ifeq	222
+   207:	getstatic	#12; //Field java/lang/System.out:Ljava/io/PrintStream;
+   210:	iload_1
+   211:	invokevirtual	#37; //Method java/io/PrintStream.print:(I)V
+   214:	getstatic	#12; //Field java/lang/System.out:Ljava/io/PrintStream;
+   217:	ldc	#43; //String  
+   219:	invokevirtual	#30; //Method java/io/PrintStream.print:(Ljava/lang/String;)V
+   222:	iload_1
+   223:	iconst_1
+   224:	iadd
+   225:	istore_1
+   226:	goto	175
+   229:	getstatic	#12; //Field java/lang/System.out:Ljava/io/PrintStream;
+   232:	invokevirtual	#22; //Method java/io/PrintStream.println:()V
+   235:	return
+   236:	return
+
+public test4();
+  Code:
+   0:	aload_0
+   1:	invokespecial	#52; //Method java/lang/Object."<init>":()V
+   4:	return
+
+}
+

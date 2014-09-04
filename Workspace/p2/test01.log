@@ -1,0 +1,78 @@
+209: //------ test declarations & expressions -------
+210: int i;
+211: int i1;
+212: int y;
+213: 
+214: void fo(int x) {   }
+215: 
+216: void
+217: main() {
+218: 
+219:   // test declarations
+220:   int a,b,c;
+221:   int x,y,z;
+222: 
+223:   // test arithmetsic expressions
+224:   a = 1+2*b;
+ERROR(225) misuse of a
+225:   a[2] = "dog";
+ERROR(226) requires integer
+226:   c = b/(4-5);
+227:   x = -1-a;
+228:   y = -x+y-(-z);
+229:   y = fo(4);
+ERROR(230) requires integer
+230: }
+231: void foo() { foo(); }
+232: 
+233: 
+234: 
+** Global Variables **
+fo, void, function, param = int
+foo, void, function, param = <void>
+i, int
+i1, int
+main, void, function, param = <void>
+printInt, void, function, param = int
+printLn, void, function, param = <void>
+printStr, void, function, param = String
+y, int
+** Local Variables in fo() **
+x, int
+{
+}
+** Local Variables in foo() **
+{
+}
+** Local Variables in main() **
+{
+a, int
+b, int
+c, int
+x, int
+y, int
+z, int
+}
+TREE_PROC: fo
+{
+}
+END_PROC
+
+TREE_PROC: main
+{
+    TREE_INSTR: a = (1 PLUS (2 MUL b))
+    TREE_INSTR: a = "dog"
+    TREE_INSTR: c = (b DIV (4 MINUS 5))
+    TREE_INSTR: x = (( MINUS 1) MINUS a)
+    TREE_INSTR: y = ((( MINUS x) PLUS y) MINUS ( MINUS z))
+    TREE_INSTR: y = CALL fo(4)
+
+}
+END_PROC
+
+TREE_PROC: foo
+{
+    TREE_INSTR: CALL foo()
+}
+END_PROC
+

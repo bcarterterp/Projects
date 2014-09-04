@@ -1,0 +1,81 @@
+376: // peephole optimizations - constant relations, simplify booleans, IF stmts
+377: int x,y;
+378: void main ( )
+379: {
+380:    int a,b;
+381:    x = 1;
+382:    y = 2;
+383:    a = 3;
+384:    b = 4;
+385: 
+386:    printStr("Results should be : a c e ");
+387:    printLn();
+388: 
+389:    if (3 == 3) { 
+390:        printStr("a ");
+391:    }
+392:    
+393:    if (1 > 2)  { 
+394:        printStr("b ");
+395:    } else {
+396:        printStr("c ");
+397:    }
+398:    
+399:    if ((1 > 2) && (a < b)) {
+400:        printStr("d ");
+401:    }
+402:    
+403:    if ((1 > 2) || (a < b)) {
+404:        printStr("e ");
+405:    }
+406:    printLn();
+407: }
+408: 
+** Global Variables **
+main, void, function, param = <void>
+printInt, void, function, param = int
+printLn, void, function, param = <void>
+printStr, void, function, param = String
+x, int
+y, int
+** Local Variables in main() **
+{
+a, int
+b, int
+{
+}
+{
+}
+{
+}
+{
+}
+{
+}
+}
+TREE_PROC: main
+{
+    TREE_INSTR: x = 1
+    TREE_INSTR: y = 2
+    TREE_INSTR: a = 3
+    TREE_INSTR: b = 4
+    TREE_INSTR: CALL printStr("Results should be : a c e ")
+    TREE_INSTR: CALL printLn()
+{
+    TREE_INSTR: CALL printStr("a ")
+}
+{
+    TREE_INSTR: CALL printStr("c ")
+}
+  TREE_IF: CONDITION: (a LESS b)
+{
+    TREE_INSTR: CALL printStr("e ")
+}
+  END_IF 
+    TREE_INSTR: CALL printLn()
+}
+END_PROC
+
+** Executing test10.class **
+Results should be : a c e 
+a c e 

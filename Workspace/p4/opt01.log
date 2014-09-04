@@ -1,0 +1,275 @@
+** Basic block: 0 **
+  Length: 1  Successors:  1  Predecessors:
+  GEN {}  KILL {}  IN {}  OUT {}
+>     0: iconst_1
+** Basic block: 1 **
+  Length: 1  Successors:  2  Predecessors: 0
+  GEN {}  KILL {1}  IN {}  OUT {1}
+>     1: istore_1
+** Basic block: 2 **
+  Length: 1  Successors:  3  Predecessors: 1
+  GEN {}  KILL {}  IN {1}  OUT {1}
+>     2: iconst_1
+** Basic block: 3 **
+  Length: 1  Successors:  4  Predecessors: 2
+  GEN {}  KILL {2}  IN {1}  OUT {1, 2}
+>     3: istore_2
+** Basic block: 4 **
+  Length: 1  Successors:  5  Predecessors: 3
+  GEN {}  KILL {}  IN {1, 2}  OUT {1, 2}
+>     4: iconst_1
+** Basic block: 5 **
+  Length: 1  Successors:  6  Predecessors: 4
+  GEN {}  KILL {3}  IN {1, 2}  OUT {1, 2, 3}
+>     5: istore_3
+** Basic block: 6 **
+  Length: 1  Successors:  7  Predecessors: 5
+  GEN {}  KILL {}  IN {1, 2, 3}  OUT {1, 2, 3}
+>     6: iconst_1
+** Basic block: 7 **
+  Length: 1  Successors:  8  Predecessors: 6
+  GEN {}  KILL {4}  IN {1, 2, 3}  OUT {1, 2, 3, 4}
+>     7: istore 4
+** Basic block: 8 **
+  Length: 1  Successors:  9  Predecessors: 7
+  GEN {}  KILL {}  IN {1, 2, 3, 4}  OUT {1, 2, 3, 4}
+>     9: iconst_1
+** Basic block: 9 **
+  Length: 1  Successors:  10  Predecessors: 8
+  GEN {}  KILL {5}  IN {1, 2, 3, 4}  OUT {1, 2, 3, 4, 5}
+>    10: istore 5
+** Basic block: 10 **
+  Length: 1  Successors:  11  Predecessors: 9
+  GEN {}  KILL {}  IN {1, 2, 3, 4, 5}  OUT {1, 2, 3, 4, 5}
+>    12: iconst_1
+** Basic block: 11 **
+  Length: 1  Successors:  12  Predecessors: 10
+  GEN {}  KILL {6}  IN {1, 2, 3, 4, 5}  OUT {1, 2, 3, 4, 5, 6}
+>    13: istore 6
+** Basic block: 12 **
+  Length: 1  Successors:  13  Predecessors: 11
+  GEN {}  KILL {}  IN {1, 2, 3, 4, 5, 6}  OUT {1, 2, 3, 4, 5, 6}
+>    15: iconst_1
+** Basic block: 13 **
+  Length: 1  Successors:  14  Predecessors: 12
+  GEN {}  KILL {7}  IN {1, 2, 3, 4, 5, 6}  OUT {1, 2, 3, 4, 5, 6, 7}
+>    16: istore 7
+** Basic block: 14 **
+  Length: 1  Successors:  15  Predecessors: 13
+  GEN {1}  KILL {}  IN {1, 2, 3, 4, 5, 6, 7}  OUT {2, 3, 4, 5, 6, 7}
+>    18: iload_1
+** Basic block: 15 **
+  Length: 1  Successors:  16  Predecessors: 14
+  GEN {2}  KILL {}  IN {2, 3, 4, 5, 6, 7}  OUT {3, 4, 5, 6, 7}
+>    19: iload_2
+** Basic block: 16 **
+  Length: 1  Successors:  17  Predecessors: 15
+  GEN {}  KILL {}  IN {3, 4, 5, 6, 7}  OUT {3, 4, 5, 6, 7}
+>    20: iadd
+** Basic block: 17 **
+  Length: 1  Successors:  18  Predecessors: 16
+  GEN {}  KILL {1}  IN {3, 4, 5, 6, 7}  OUT {1, 3, 4, 5, 6, 7}
+>    21: istore_1
+** Basic block: 18 **
+  Length: 1  Successors:  19  Predecessors: 17
+  GEN {1}  KILL {}  IN {1, 3, 4, 5, 6, 7}  OUT {3, 4, 5, 6, 7}
+>    22: iload_1
+** Basic block: 19 **
+  Length: 1  Successors:  20  Predecessors: 18
+  GEN {3}  KILL {}  IN {3, 4, 5, 6, 7}  OUT {4, 5, 6, 7}
+>    23: iload_3
+** Basic block: 20 **
+  Length: 1  Successors:  21  Predecessors: 19
+  GEN {}  KILL {}  IN {4, 5, 6, 7}  OUT {4, 5, 6, 7}
+>    24: iadd
+** Basic block: 21 **
+  Length: 1  Successors:  22  Predecessors: 20
+  GEN {}  KILL {1}  IN {4, 5, 6, 7}  OUT {1, 4, 5, 6, 7}
+>    25: istore_1
+** Basic block: 22 **
+  Length: 1  Successors:  23  Predecessors: 21
+  GEN {5}  KILL {}  IN {1, 4, 5, 6, 7}  OUT {1, 4, 5, 6, 7}
+>    26: iload 5
+** Basic block: 23 **
+  Length: 1  Successors:  24  Predecessors: 22
+  GEN {7}  KILL {}  IN {1, 4, 5, 6, 7}  OUT {1, 4, 5, 6, 7}
+>    28: iload 7
+** Basic block: 24 **
+  Length: 1  Successors:  25  Predecessors: 23
+  GEN {}  KILL {}  IN {1, 4, 5, 6, 7}  OUT {1, 4, 5, 6, 7}
+>    30: iadd
+** Basic block: 25 **
+  Length: 1  Successors:  26  Predecessors: 24
+  GEN {}  KILL {3}  IN {1, 4, 5, 6, 7}  OUT {1, 3, 4, 5, 6, 7}
+>    31: istore_3
+** Basic block: 26 **
+  Length: 1  Successors:  27  Predecessors: 25
+  GEN {6}  KILL {}  IN {1, 3, 4, 5, 6, 7}  OUT {1, 3, 4, 5, 6, 7}
+>    32: iload 6
+** Basic block: 27 **
+  Length: 1  Successors:  28  Predecessors: 26
+  GEN {}  KILL {}  IN {1, 3, 4, 5, 6, 7}  OUT {1, 3, 4, 5, 6, 7}
+>    34: iconst_1
+** Basic block: 28 **
+  Length: 1  Successors:  29  Predecessors: 27
+  GEN {}  KILL {}  IN {1, 3, 4, 5, 6, 7}  OUT {1, 3, 4, 5, 6, 7}
+>    35: iadd
+** Basic block: 29 **
+  Length: 1  Successors:  30  Predecessors: 28
+  GEN {}  KILL {2}  IN {1, 3, 4, 5, 6, 7}  OUT {1, 2, 3, 4, 5, 6, 7}
+>    36: istore_2
+** Basic block: 30 **
+  Length: 1  Successors:  31  Predecessors: 29
+  GEN {}  KILL {}  IN {1, 2, 3, 4, 5, 6, 7}  OUT {1, 2, 3, 4, 5, 6, 7}
+>    37: bipush -3
+** Basic block: 31 **
+  Length: 1  Successors:  32  Predecessors: 30
+  GEN {1}  KILL {}  IN {1, 2, 3, 4, 5, 6, 7}  OUT {2, 3, 4, 5, 6, 7}
+>    39: iload_1
+** Basic block: 32 **
+  Length: 1  Successors:  33  Predecessors: 31
+  GEN {}  KILL {}  IN {2, 3, 4, 5, 6, 7}  OUT {2, 3, 4, 5, 6, 7}
+>    40: iadd
+** Basic block: 33 **
+  Length: 1  Successors:  34  Predecessors: 32
+  GEN {}  KILL {1}  IN {2, 3, 4, 5, 6, 7}  OUT {1, 2, 3, 4, 5, 6, 7}
+>    41: istore_1
+** Basic block: 34 **
+  Length: 1  Successors:  35  Predecessors: 33
+  GEN {1}  KILL {}  IN {1, 2, 3, 4, 5, 6, 7}  OUT {2, 3, 4, 5, 6, 7}
+>    42: iload_1
+** Basic block: 35 **
+  Length: 1  Successors:  36  Predecessors: 34
+  GEN {2}  KILL {}  IN {2, 3, 4, 5, 6, 7}  OUT {3, 4, 5, 6, 7}
+>    43: iload_2
+** Basic block: 36 **
+  Length: 1  Successors:  37  Predecessors: 35
+  GEN {}  KILL {}  IN {3, 4, 5, 6, 7}  OUT {3, 4, 5, 6, 7}
+>    44: iadd
+** Basic block: 37 **
+  Length: 1  Successors:  38  Predecessors: 36
+  GEN {3}  KILL {}  IN {3, 4, 5, 6, 7}  OUT {4, 5, 6, 7}
+>    45: iload_3
+** Basic block: 38 **
+  Length: 1  Successors:  39  Predecessors: 37
+  GEN {}  KILL {}  IN {4, 5, 6, 7}  OUT {4, 5, 6, 7}
+>    46: iadd
+** Basic block: 39 **
+  Length: 1  Successors:  40  Predecessors: 38
+  GEN {4}  KILL {}  IN {4, 5, 6, 7}  OUT {5, 6, 7}
+>    47: iload 4
+** Basic block: 40 **
+  Length: 1  Successors:  41  Predecessors: 39
+  GEN {}  KILL {}  IN {5, 6, 7}  OUT {5, 6, 7}
+>    49: iadd
+** Basic block: 41 **
+  Length: 1  Successors:  42  Predecessors: 40
+  GEN {5}  KILL {}  IN {5, 6, 7}  OUT {6, 7}
+>    50: iload 5
+** Basic block: 42 **
+  Length: 1  Successors:  43  Predecessors: 41
+  GEN {}  KILL {}  IN {6, 7}  OUT {6, 7}
+>    52: iadd
+** Basic block: 43 **
+  Length: 1  Successors:  44  Predecessors: 42
+  GEN {6}  KILL {}  IN {6, 7}  OUT {7}
+>    53: iload 6
+** Basic block: 44 **
+  Length: 1  Successors:  45  Predecessors: 43
+  GEN {}  KILL {}  IN {7}  OUT {7}
+>    55: iadd
+** Basic block: 45 **
+  Length: 1  Successors:  46  Predecessors: 44
+  GEN {7}  KILL {}  IN {7}  OUT {}
+>    56: iload 7
+** Basic block: 46 **
+  Length: 1  Successors:  47  Predecessors: 45
+  GEN {}  KILL {}  IN {}  OUT {}
+>    58: iadd
+** Basic block: 47 **
+  Length: 1  Successors:  48  Predecessors: 46
+  GEN {}  KILL {1}  IN {}  OUT {1}
+>    59: istore_1
+** Basic block: 48 **
+  Length: 1  Successors:  49  Predecessors: 47
+  GEN {}  KILL {}  IN {1}  OUT {1}
+>    60: ldc 8
+** Basic block: 49 **
+  Length: 1  Successors:  50  Predecessors: 48
+  GEN {}  KILL {}  IN {1}  OUT {1}
+>    62: invokestatic 14
+** Basic block: 50 **
+  Length: 1  Successors:  51  Predecessors: 49
+  GEN {1}  KILL {}  IN {1}  OUT {}
+>    65: iload_1
+** Basic block: 51 **
+  Length: 1  Successors:  52  Predecessors: 50
+  GEN {}  KILL {}  IN {}  OUT {}
+>    66: invokestatic 18
+** Basic block: 52 **
+  Length: 1  Successors:  53  Predecessors: 51
+  GEN {}  KILL {}  IN {}  OUT {}
+>    69: invokestatic 22
+** Basic block: 53 **
+  Length: 1  Successors:  54  Predecessors: 52
+  GEN {}  KILL {}  IN {}  OUT {}
+>    72: return
+** Basic block: 54 **
+  Length: 0  Successors:   Predecessors: 53
+  GEN {}  KILL {}  IN {}  OUT {}
+
+<<---- Live Ranges ---->>
+[B 0]  [Live                         ]   0: iconst_1
+[B 1]  [Live                         ]   1: istore_1
+[B 2]  [Live     1                   ]   2: iconst_1
+[B 3]  [Live     1                   ]   3: istore_2
+[B 4]  [Live     1  2                ]   4: iconst_1
+[B 5]  [Live     1  2                ]   5: istore_3
+[B 6]  [Live     1  2  3             ]   6: iconst_1
+[B 7]  [Live     1  2  3             ]   7: istore 4
+[B 8]  [Live     1  2  3  4          ]   9: iconst_1
+[B 9]  [Live     1  2  3  4          ]  10: istore 5
+[B 10] [Live     1  2  3  4  5       ]  12: iconst_1
+[B 11] [Live     1  2  3  4  5       ]  13: istore 6
+[B 12] [Live     1  2  3  4  5  6    ]  15: iconst_1
+[B 13] [Live     1  2  3  4  5  6    ]  16: istore 7
+[B 14] [Live     1  2  3  4  5  6  7 ]  18: iload_1
+[B 15] [Live        2  3  4  5  6  7 ]  19: iload_2
+[B 16] [Live           3  4  5  6  7 ]  20: iadd
+[B 17] [Live           3  4  5  6  7 ]  21: istore_1
+[B 18] [Live     1     3  4  5  6  7 ]  22: iload_1
+[B 19] [Live           3  4  5  6  7 ]  23: iload_3
+[B 20] [Live              4  5  6  7 ]  24: iadd
+[B 21] [Live              4  5  6  7 ]  25: istore_1
+[B 22] [Live     1        4  5  6  7 ]  26: iload 5
+[B 23] [Live     1        4  5  6  7 ]  28: iload 7
+[B 24] [Live     1        4  5  6  7 ]  30: iadd
+[B 25] [Live     1        4  5  6  7 ]  31: istore_3
+[B 26] [Live     1     3  4  5  6  7 ]  32: iload 6
+[B 27] [Live     1     3  4  5  6  7 ]  34: iconst_1
+[B 28] [Live     1     3  4  5  6  7 ]  35: iadd
+[B 29] [Live     1     3  4  5  6  7 ]  36: istore_2
+[B 30] [Live     1  2  3  4  5  6  7 ]  37: bipush -3
+[B 31] [Live     1  2  3  4  5  6  7 ]  39: iload_1
+[B 32] [Live        2  3  4  5  6  7 ]  40: iadd
+[B 33] [Live        2  3  4  5  6  7 ]  41: istore_1
+[B 34] [Live     1  2  3  4  5  6  7 ]  42: iload_1
+[B 35] [Live        2  3  4  5  6  7 ]  43: iload_2
+[B 36] [Live           3  4  5  6  7 ]  44: iadd
+[B 37] [Live           3  4  5  6  7 ]  45: iload_3
+[B 38] [Live              4  5  6  7 ]  46: iadd
+[B 39] [Live              4  5  6  7 ]  47: iload 4
+[B 40] [Live                 5  6  7 ]  49: iadd
+[B 41] [Live                 5  6  7 ]  50: iload 5
+[B 42] [Live                    6  7 ]  52: iadd
+[B 43] [Live                    6  7 ]  53: iload 6
+[B 44] [Live                       7 ]  55: iadd
+[B 45] [Live                       7 ]  56: iload 7
+[B 46] [Live                         ]  58: iadd
+[B 47] [Live                         ]  59: istore_1
+[B 48] [Live     1                   ]  60: ldc 8
+[B 49] [Live     1                   ]  62: invokestatic 14
+[B 50] [Live     1                   ]  65: iload_1
+[B 51] [Live                         ]  66: invokestatic 18
+[B 52] [Live                         ]  69: invokestatic 22
+[B 53] [Live                         ]  72: return

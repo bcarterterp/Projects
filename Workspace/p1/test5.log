@@ -1,0 +1,16 @@
+69: 
+70: //-------- test parser errors --------
+71: 
+72: int x, y  z;          // illegal variable declaration
+ERROR(73) illegal variable declaration
+73: int foo () 
+74: {
+75:     int i, j , k;
+76:     i = j * ( 5 + ) ; // illegal expression
+ERROR(77) illegal expression
+77:     i = 4;
+78:     i - (1 * 2);      // illegal statement
+ERROR(79) illegal statement
+79:     j = 5;
+80: }
+81: 

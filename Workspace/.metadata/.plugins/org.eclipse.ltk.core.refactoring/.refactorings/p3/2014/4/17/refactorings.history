@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename local variable &apos;end&apos; in &apos;mycc.ClassFile.genTreeCode(...)&apos; to &apos;start_else&apos;&#x0A;- Original project: &apos;p3&apos;&#x0A;- Original element: &apos;mycc.ClassFile.genTreeCode(InstructionList, astNode).end&apos;&#x0A;- Renamed element: &apos;end&apos;&#x0A;- Update references to refactored element" description="Rename local variable &apos;end&apos;" id="org.eclipse.jdt.ui.rename.local.variable" input="/&lt;mycc{ClassFile.java[ClassFile~genTreeCode~QInstructionList;~QastNode;@end!14085!14128!14101!14103!QInstructionList;!0!false" name="start_else" references="true" stamp="1398131784225" version="1.0"/>
+</session>

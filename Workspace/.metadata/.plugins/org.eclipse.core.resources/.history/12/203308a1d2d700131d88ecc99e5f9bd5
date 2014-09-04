@@ -1,0 +1,1340 @@
+
+package mycc;
+
+import java.util.*;
+
+import org.apache.bcel.*;
+import org.apache.bcel.classfile.*;
+import org.apache.bcel.generic.*;
+
+public class ClassFile implements Constants
+{
+   private static boolean               optFlag;
+   private static boolean               verboseFlag;
+   private static ClassGen              class_gen;
+   private static String                output_fname;
+   private static String                class_name;
+   private static ConstantPoolGen       cp_gen;
+   private static int                   system_out;     // ref to System.out
+   private static InstructionList       il_main;        // instruction list for
+
+   // array initialization
+
+   //--------------------------------------------------------------------
+   // ClassFile constructor
+
+   public ClassFile(String cname)
+   {
+      try
+      {
+         optFlag = false;           // no optimization for now
+         verboseFlag = true;        // print out more diagnostics
+
+         class_name = cname;
+
+         ClassGen               cg = new ClassGen(class_name, 
+                                                  "java.lang.Object", 
+                                                  "<generated>", 
+                                                  ACC_PUBLIC | ACC_SUPER, 
+                                                  null);
+
+         ConstantPoolGen        cp = cg.getConstantPool();
+         InstructionList        il = new InstructionList();
+
+         MethodGen              mg = new MethodGen(ACC_STATIC | ACC_PUBLIC, 
+                                                   Type.VOID, new Type[]
+         {
+            new ArrayType(Type.STRING, 1)
+         }, new String[]
+         {
+            "argv"
+         }, "main", class_name, il, cp);
+
+         system_out = cp.addFieldref("java.lang.System", "out", 
+                                     "Ljava/io/PrintStream;");
+
+         class_gen = cg;
+         cp_gen = cp;
+         il_main = il;
+      }
+      catch (Exception e)
+      {
+         e.printStackTrace();
+      }
+   }
+
+   //--------------------------------------------------------------------
+   // generate code for list of functions
+
+   public static void genCode(astNodeList code, symTab symTab, boolean oFlag)
+   {
+      try
+      {
+
+         system_out = cp_gen.addFieldref("java.lang.System", "out", 
+                                         "Ljava/io/PrintStream;");
+
+         optFlag = oFlag;
+         addGlobalVarRefs(symTab);
+         genAllProcs(code, symTab);
+
+         class_gen.addEmptyConstructor(Constants.ACC_PUBLIC);
+
+         ConstantPool   cp = cp_gen.getFinalConstantPool();
+         JavaClass      java_class = class_gen.getJavaClass();
+
+         java_class.setConstantPool(cp_gen.getFinalConstantPool());
+         java_class.dump(class_name + ".class");
+
+         if (verboseFlag == true)
+         {
+            Field[] f = class_gen.getFields();
+            System.out.println("<<---- Global Variables ---->>");
+
+            for (int i = 0; i < f.length; i++)
+               System.out.println(f[i].toString());
+
+            System.out.println("");
+         }
+
+         // System.out.println(cp.toString());
+         // System.out.println(java_class.toString());
+      }
+      catch (Exception e)
+      {
+         e.printStackTrace();
+      }
+
+   }
+
+   //--------------------------------------------------------------------
+   // add variables to the constant pool 
+
+   private static void addGlobalVarRefs(symTab symTab)
+   {
+      for (Iterator i = symTab.getIter(); i.hasNext();)
+      {
+         symTabEntry    s = (symTabEntry) i.next();
+         int            index;
+
+         s.setGlobal();
+
+         if (s.getType() == sym.INT)
+         {
+            if (s.isArray())
+            {
+               index = addField(s.name(), "[I");
+
+               s.setIndex(index);
+
+               // initialize the array in the main method 
+               il_main.append(new BIPUSH((byte) s.getArraySize()));
+               il_main.append(new NEWARRAY((byte) T_INT));
+               il_main.append(new PUTSTATIC(index));
+            }
+            else if (!s.isFunc())       // simple scalar variable 
+            {
+               index = addField(s.name(), "I");
+
+               s.setIndex(index);
+            }
+         }
+
+         if (s.getType() == sym.STRING_LITERAL)
+         {
+            index = cp_gen.addString(s.name());
+
+            s.setIndex(index);
+         }
+
+         // add methodref for all the functions 
+         if (s.isFunc())
+         {
+
+            // take care of the print statements 
+
+            if (s.name().equals("printInt"))
+               index = cp_gen.addMethodref("java.io.PrintStream", "print", 
+                                           "(I)V");
+            else if (s.name().equals("printStr"))
+               index = cp_gen.addMethodref("java.io.PrintStream", "print", 
+                                           "(Ljava/lang/String;)V");
+            else if (s.name().equals("printLn"))
+               index = cp_gen.addMethodref("java.io.PrintStream", "println", 
+                                           "()V");
+            else if (s.name().equals("main"))
+               index = cp_gen.addMethodref(class_name, "main", 
+                                           "([Ljava/lang/String;)V");
+            else
+            {
+               String signature = findSignature(s);
+               index = cp_gen.addMethodref(class_name, s.name(), signature);
+            }
+
+            s.setIndex(index);
+
+         }
+      }
+
+
+   }
+
+   //--------------------------------------------------------------------
+   // add field for function name
+
+   private static int addField(String name, String signature)
+   {
+
+      int       index = cp_gen.addFieldref(class_name, name, signature);
+
+      Type      t = Type.getType(signature);
+
+      FieldGen  fgen = new FieldGen(ACC_PUBLIC | ACC_STATIC, t, name, cp_gen);
+
+      Field     f = fgen.getField();
+
+      class_gen.addField(f);
+
+      return index;
+
+   }
+
+
+   //--------------------------------------------------------------------
+   // compute Java function signature
+
+   private static String findSignature(symTabEntry s)
+   {
+      String    signature = null;
+
+      if (s.getType() == sym.INT) {
+          if (s.getParam() == null) 
+             signature = new String("()I");
+          else 
+             signature = new String("(I)I");
+      }
+      else if (s.getType() == sym.VOID) {
+          if (s.getParam() == null) 
+              signature = new String("()V");
+          else
+              signature = new String("(I)V");
+      }
+      else
+            System.out.println("ERROR: Unknown function signature");
+
+      return signature;
+   }
+
+   //--------------------------------------------------------------------
+   // generate byte code code for list of functions
+
+   private static void genAllProcs(astNodeList code, symTab symTab)
+   {
+	astNode c = code.getFirstNode();
+	while (c != null)
+	{
+		symTabEntry s = c.getCondition().getSymbol();
+
+		if (s.isFunc())        // s is an entry for a function 
+		{
+			genProcCode(s, c.getNode1());
+		}
+
+		c = code.getNextNode();
+	}
+   }
+
+
+   //--------------------------------------------------------------------
+   // produce code for single function
+
+   private static void genProcCode(symTabEntry s, astNode body)
+   {
+      symTab                    localSymTab = s.getSymTab();
+      Type                      retTp = null; // return type of the method 
+      Type[]                    args = new Type[1]; // arg type of method 
+      symTabEntry               param = s.getParam();
+      InstructionList           il;     // instruction list for the method 
+      String                    signature;
+      String[]                  arg_name = new String[1];
+      int                       index; // starting index of the local var slot
+
+      if (s.name().equals("main"))   // for now assume void main()
+      {
+         signature = new String("([Ljava/lang/String;)V");
+         retTp = Type.VOID;
+         args = Type.getArgumentTypes(signature);
+         il = il_main;          // get the existing instruction list 
+         index = 1;
+         arg_name[0] = new String("argv");
+      }
+      else if (s.name().equals("printStr")) {
+         return;
+      }
+      else if (s.name().equals("printInt")) {
+         return;
+      }
+      else if (s.name().equals("printLn")) {
+         return;
+      }
+      else
+      {
+         signature = findSignature(s);
+
+         if (s.getType() == sym.INT)
+            retTp = Type.INT;
+         else if (s.getType() == sym.VOID)
+            retTp = Type.VOID;
+
+         index = 0;
+         if (param == null)     // passing void 
+         {
+            args = null;
+            arg_name = null;
+         }
+
+         else                   // passing an int 
+         {
+            args[0] = Type.INT;
+            arg_name[0] = param.name();
+
+            // System.out.println(s.name()+": "+param.name()+" at index="+index);
+
+            param.setIndex(index);
+            index++;   
+
+            param.setLocal();
+         }
+
+         il = new InstructionList();
+      }
+
+      // generate the method 
+      MethodGen         mgen = new MethodGen(ACC_STATIC | ACC_PUBLIC, retTp, 
+                                             args, arg_name, s.name(), 
+                                             class_name, il, cp_gen);
+
+//----------------------------------------------------
+//----------------------------------------------------
+//--- Modify code past this point for project 3
+//----------------------------------------------------
+//----------------------------------------------------
+
+      ArrayList <symTab> allNestedTables = new ArrayList<symTab>();
+      allNestedTables.add(localSymTab);
+      symTab currTab = localSymTab;
+      // assign slot to the local variables 
+      while(currTab != null){
+    	  
+      // handle nested symbol tables
+      // for each local variable in each symbol table
+      //    assign index to local variable (allocate storage) and set its type
+    	  
+    	  for (Iterator i = currTab.getIter(); i.hasNext();){	
+    		  
+             // for each symTabEntry var, allocate storage on local stack 
+    	  
+             symTabEntry var = (symTabEntry) i.next();
+             Type t;
+             
+             if(var.getType() == sym.INT){
+            	 t = Type.INT;
+             }else{
+            	 t = Type.VOID;
+             }
+
+             if (var != s.getParam()) {  // avoid parameters
+
+                 mgen.addLocalVariable(var.name(), t, index, null, null);
+
+                 //System.out.println(s.name()+": "+var.name()+" at index="+index);
+                 var.setIndex(index); // store index for var
+                 var.setLocal();      // mark var as local variable
+
+                 if (var.isArray())
+                 {      // generate the initialization code 
+                    il.append(new BIPUSH((byte) var.getArraySize()));
+                    il.append(new NEWARRAY((byte) T_INT));
+                    il.append(new ASTORE(index));
+                 }
+                 index++;
+             }
+             
+    	  }
+    	  
+    	  allNestedTables.addAll(currTab.getChildren());
+    	  allNestedTables.remove(0);
+    	  if(allNestedTables.size() > 0){
+    		  currTab = allNestedTables.get(0);
+    	  }else{
+    		  currTab = null;
+    	  }
+      }
+
+      genTreeCode(il, body);
+
+      il.append(new RETURN());   // make sure each function has a return
+
+      il.setPositions();
+
+      if (optFlag)
+          optimizeCode(il);
+
+      mgen.setMaxStack();
+      mgen.setMaxLocals();
+
+      class_gen.addMethod(mgen.getMethod());
+
+      if (verboseFlag == true)
+      {
+         System.out.println("<<---- Local Variables in "+s.name()+"() ---->>");
+
+         LocalVariableTable lvTab = mgen.getLocalVariableTable(cp_gen);
+         LocalVariable[] lvars = lvTab.getLocalVariableTable();
+
+         for (int i = 0; i < lvars.length; i++)
+             System.out.println(lvars[i].toString());
+      }
+   }
+
+
+   //--------------------------------------------------------------------
+   // Handles AST nodes of type TREE_IF, TREE_WHILE, and TREE_BLK
+
+   private static void genTreeCode(InstructionList il, astNode tn)
+   {
+
+	   expNode condExp;
+	      InstructionHandle lab1, lab2;
+	      InstructionList condList;
+
+	         // TREE_INSTR
+	         if (tn.isTreeInstr())
+	         {
+	            genExpCode(il, tn.getInstr());
+	         }
+
+	         // TREE_BLK
+	         else if (tn.isTreeBlk())
+	         {
+	            astNodeList tnl = tn.getList();
+
+	            tn = tnl.getFirstNode();
+	            while (tn != null)
+	            {
+	               genTreeCode(il, tn);
+	               tn = tnl.getNextNode();
+	            }
+	         }
+
+	         // TREE_IF
+	         else if (tn.isTreeIf())
+	         {
+	             InstructionList ifList, elseList;
+	             astNode elseStmts = tn.getNode2();
+	             condExp = tn.getCondition();
+
+	                 condList = new InstructionList();
+	                 genExpCode(condList, condExp);
+
+	                 ifList = new InstructionList();
+	                 genTreeCode(ifList, tn.getNode1());
+
+	                 //-----------------------------
+	                 // IF ( exp ) { ifStmts }
+	    
+	                 if (elseStmts == null) {
+	                     lab1 = ifList.append(new NOP());
+	                     condList.append(new IFEQ(lab1));
+	                     il.append(condList);             // evaluate condition
+	                     il.append(ifList);               // body of if stmt
+	                 }
+
+	                 //-----------------------------
+	                 // IF ( exp ) { ifStmts } ELSE { elseStmts }
+
+	                 else {
+	                	 
+	                	 elseList = new InstructionList();
+	                	 genTreeCode(elseList, elseStmts);
+	                	 
+	                   	 InstructionList start_else = new InstructionList();
+	                	 lab1 = start_else.append(new NOP());
+	                	 lab2 = elseList.append(new NOP());
+
+	                	 
+	                	 condList.append(new IFEQ(lab1));
+	                	 il.append(condList);
+	                	 il.append(ifList);
+	                	 il.append(new GOTO(lab2));
+	                	 il.append(start_else);
+	                	 il.append(elseList);
+
+	                 }
+	         }
+
+	         // TREE_WHILE
+	         else if (tn.isTreeWhile())          // while loop 
+	         {
+	        	 InstructionList ifList = new InstructionList();
+	        	 genTreeCode(ifList, tn.getNode1());
+	        	 
+	        	 InstructionList top_loop = new InstructionList();
+	        	 lab1 = top_loop.append(new NOP());
+	        	 
+	        	 InstructionList end_loop = new InstructionList();
+	        	 lab2 = end_loop.append(new NOP());
+	        	 
+	        	 condList = new InstructionList();
+	        	 condExp = tn.getCondition();
+	             genExpCode(condList, condExp);
+	             condList.append(new IFEQ(lab2));
+	             
+	        	 
+	        	 il.append(top_loop);
+	        	 il.append(condList);
+	        	 il.append(ifList);
+	        	 il.append(new GOTO(lab1));
+	        	 il.append(end_loop);
+	        	 
+	         }
+	         else {
+	            System.out.println("ERROR: Unknown astNode type");
+	         }
+   }
+
+
+   //--------------------------------------------------------------------
+   /**
+    * Handles AST nodes of type TREE_INSTRUCTION 
+    *
+    *  nodeType = Const.*
+    */
+
+   private static void genExpCode(InstructionList il, expNode instr)
+   {
+	   symTabEntry id;
+
+	      if (instr == null) {
+	         System.out.println("ERROR: genExpCode() found empty instr");
+	         return;
+	      }
+
+	      //---------------------------
+	      // generate code for binary operators
+
+	      int op = instr.nodeType();
+	      switch (op)
+	      {
+	         case Const.IDENTIFIER:
+	            id = instr.getSymbol();
+	            if (id.isLocal())
+	               il.append(new ILOAD((byte) id.getIndex()));
+	            else if (id.isGlobal())
+	               il.append(new GETSTATIC((byte) id.getIndex()));
+	            else
+	               System.out.println("ERROR: Unknown id scope");
+	            break;
+
+	         case Const.ARRAY:
+	        	 
+	        	 id = instr.getSymbol();
+	        	 if (id.isLocal()){
+	        		 il.append(new ALOAD((byte) id.getIndex()));
+	        		 if(instr.getOp1().nodeType == Const.IDENTIFIER){
+	         			symTabEntry id2 = instr.getOp1().getSymbol();
+	         			if(id2.isLocal()){
+	         				il.append(new ILOAD((byte) id2.getIndex()));
+	         			}else if (id.isGlobal()){
+	         	            il.append(new GETSTATIC((byte) id2.getIndex()));
+	         			}	
+	         		}else{
+	         			genExpCode(il, instr.getOp1());
+	         		}
+	        	 }else if(id.isGlobal()){
+	        		 
+	        		 il.append(new GETSTATIC((byte) id.getIndex()));
+	        		 genExpCode(il, instr.getOp1());
+	        		 
+	        	 }
+	        	 il.append(new IALOAD()); 
+	        	 
+	            break;
+
+	         case Const.INTEGER:
+	            il.append(new PUSH(cp_gen, instr.getVal()));
+	            break;
+
+	         case Const.STRING:
+	            int i = cp_gen.addString(instr.getStr());
+	            il.append(new LDC((byte) i));
+	            break;
+
+	         case Const.CALL:
+	            symTabEntry func = instr.getOp1().getSymbol();
+	            expNode arg = instr.getOp2();
+
+	            if (func.name().equals("printInt") || 
+	                func.name().equals("printStr") ||
+	                func.name().equals("printLn"))
+	            {
+	                il.append(new GETSTATIC(system_out));
+
+	                if (arg != null)
+	                   genExpCode(il, arg);
+
+	                il.append(new INVOKEVIRTUAL(func.getIndex()));
+	            }
+	            else
+	            {
+	                // use INVOKESTATIC
+	            	if(arg != null){
+	            		genExpCode(il, arg);
+	            	}
+	            	il.append(new INVOKESTATIC(func.getIndex()));
+	            }
+	            break;
+
+	         case Const.INSTRUCTION:
+	            genOpCode(il, instr);
+	            break;
+
+	         default:
+	            System.out.println("ERROR: Unknown expNode nodeType = "+op);
+	            break;
+	     }
+   }
+            
+
+   //--------------------------------------------------------------------
+   /*
+    * Handles AST nodes of type TREE_INSTRUCTION (with opcodes)
+    *
+    *  nodeType = Const.INSTRUCTION
+    *  opCode = sym.*
+   */
+
+   private static void genOpCode(InstructionList il, expNode instr)
+   {
+	   expNode op1, op2;
+	      op1 = instr.getOp1();
+	      op2 = instr.getOp2();
+	      symTabEntry id;
+
+	      InstructionList list1 = new InstructionList();
+	      InstructionList list2 = new InstructionList();
+	      InstructionHandle lab1 = list1.append(new NOP());
+	      InstructionHandle lab2 = list2.append(new NOP());
+
+	         int op = instr.getOpcode();
+	         switch (op)
+	         {
+	         case sym.ASSIGN:
+	            id = op1.getSymbol();
+
+	            // assign to IDENTIFIER
+	            if (op1.nodeType() == Const.IDENTIFIER)
+	            {
+	               genExpCode(il, op2);
+	               if (id.isLocal())           // local scalar variable
+	                  il.append(new ISTORE((byte) id.getIndex()));
+	               else if (id.isGlobal())     // global scalar
+	                  il.append(new PUTSTATIC((byte) id.getIndex()));
+
+	            }
+	            // assign to ARRAY
+	            else if (op1.nodeType() == Const.ARRAY) {
+	            	
+	            	if (id.isLocal()){
+	            		il.append(new ALOAD((byte) id.getIndex()));
+	            		if(op1.getOp1().nodeType == Const.IDENTIFIER){
+	            			symTabEntry id2 = op1.getOp1().getSymbol();
+	            			if(id2.isLocal()){
+	            				il.append(new ILOAD((byte) id2.getIndex()));
+	            			}else if (id.isGlobal()){
+	            	            il.append(new GETSTATIC((byte) id2.getIndex()));
+	            			}	
+	            		}else{
+	            			genExpCode(il, op1.getOp1());
+	            		}
+	            		genExpCode(il, op2);
+	            		il.append(new IASTORE());
+	            	}else if (id.isGlobal()){
+
+	            		il.append(new GETSTATIC((byte)id.getIndex()));
+	            		if(op1.getOp1().nodeType == Const.IDENTIFIER){
+	            			symTabEntry id2 = op1.getOp1().getSymbol();
+	            			if(id2.isLocal()){
+	            				il.append(new ILOAD((byte) id2.getIndex()));
+	            			}else if (id.isGlobal()){
+	            	            il.append(new GETSTATIC((byte) id2.getIndex()));
+	            			}	
+	            		}else{
+	            			genExpCode(il, op1.getOp1());
+	            		}
+	            		genExpCode(il, op2);
+	            		il.append(new IASTORE());
+	            		
+	            	}
+	            	
+	            	
+	            }
+	            else {
+	               System.out.println("ERROR: Unknown LHS");
+	            }
+	            break;
+
+	         case sym.RETURN:
+	        	 
+	        	 if (op1 != null) {
+					id = op1.getSymbol();
+					if (op1.nodeType() == Const.IDENTIFIER) {
+						if (id.isLocal()) {
+							il.append(new ILOAD((byte) id.getIndex()));
+						} else if (id.isGlobal()) {
+							il.append(new GETSTATIC((byte) id.getIndex()));
+						}
+					} else if (op1.nodeType() == Const.ARRAY) {
+
+						if (id.isLocal()) {
+
+							il.append(new ALOAD((byte) id.getIndex()));
+							if (op1.getOp1().nodeType == Const.IDENTIFIER) {
+								symTabEntry id2 = op1.getOp1().getSymbol();
+								if (id2.isLocal()) {
+									il.append(new ILOAD((byte) id2.getIndex()));
+								} else if (id.isGlobal()) {
+									il.append(new GETSTATIC((byte) id2.getIndex()));
+								}
+							} else {
+								genExpCode(il, op1.getOp1());
+							}
+							il.append(new IALOAD());
+
+						} else if (id.isGlobal()) {
+
+							il.append(new GETSTATIC(id.getIndex()));
+
+						}
+
+					} else {
+						genExpCode(il, op1);
+					}
+					il.append(new IRETURN());
+				}
+				break;
+
+	         case sym.MUL:
+	        	genExpCode(il, op1);
+	        	genExpCode(il, op2);
+	        	il.append(new IMUL());
+	            break;
+
+	         case sym.DIV:
+	        	genExpCode(il, op1);
+	         	genExpCode(il, op2);
+	         	il.append(new IDIV());
+	            break;
+
+	         case sym.PLUS:
+	        	
+	        		genExpCode(il, op1);
+	            	genExpCode(il, op2);
+	            	il.append(new IADD());
+	            	
+	            break;
+
+	         case sym.MINUS:
+	        	 if(op2 == null){
+	        		 op1.val = op1.val*-1;
+	        		 genExpCode(il, op1);
+	        		 
+	        	 }else{
+	        		 genExpCode(il, op1);
+	        		 genExpCode(il, op2);
+	        		 il.append(new ISUB());
+	        	 }
+	            break;
+
+	         case sym.EQ_OP:
+	        	 genExpCode(il, op1);
+	        	 genExpCode(il, op2);
+	        	 
+	        	 list1.append(new PUSH(cp_gen, 1));
+	        	 
+	             il.append(new IF_ICMPEQ(lab1));
+	             il.append(new PUSH(cp_gen, 0));
+	             il.append(new GOTO(lab2));
+	             
+	             il.append(list1);
+	             il.append(list2);
+	        	 
+	            break;
+
+	         case sym.NE_OP:
+	        	 
+	        	 genExpCode(il, op1);
+	        	 genExpCode(il, op2);
+	        	 
+	        	 list1.append(new PUSH(cp_gen, 1));
+	        	 
+	             il.append(new IF_ICMPNE(lab1));
+	             il.append(new PUSH(cp_gen, 0));
+	             il.append(new GOTO(lab2));
+	             
+	             il.append(list1);
+	             il.append(list2);
+	        	 
+	            break;
+
+	         case sym.LESS:
+	        	 
+	        	 genExpCode(il, op1);
+	        	 genExpCode(il, op2);
+	        	 
+	        	 list1.append(new PUSH(cp_gen, 1));
+	        	 
+	             il.append(new IF_ICMPLT(lab1));
+	             il.append(new PUSH(cp_gen, 0));
+	             il.append(new GOTO(lab2));
+	             
+	             il.append(list1);
+	             il.append(list2);
+	        	 
+	            break;
+
+	         case sym.GR:
+	        	 
+	        	 genExpCode(il, op1);
+	        	 genExpCode(il, op2);
+	        	 
+	        	 list1.append(new PUSH(cp_gen, 1));
+	        	 
+	             il.append(new IF_ICMPGT(lab1));
+	             il.append(new PUSH(cp_gen, 0));
+	             il.append(new GOTO(lab2));
+	             
+	             il.append(list1);
+	             il.append(list2);
+	        	 
+	            break;
+
+	         case sym.AND_OP:
+	        	 
+	        	 genExpCode(il, op1);
+	        	 
+	        	 il.append(new DUP());
+	        	 il.append(new IFEQ(lab1));
+	        	 il.append(new POP());
+	        	 
+	        	 genExpCode(il, op2);
+	        	 
+	        	 il.append(list1);
+	        	 
+	        	 
+	        	 
+	            break;
+
+	         case sym.OR_OP:
+	        	 
+	        	 genExpCode(il, op1);
+	        	 
+	        	 il.append(new DUP());
+	        	 il.append(new IFNE(lab1));
+	        	 il.append(new POP());
+	        	 
+	        	 genExpCode(il, op2);
+	        	 
+	        	 il.append(list1);
+	        	 
+	            break;
+
+	         case sym.NOT_OP:
+	        	 
+	        	 list1.append(new PUSH(cp_gen, 1));
+	        	 
+	        	 genExpCode(il, op1);
+	        	 il.append(new IFEQ(lab1));
+	        	 il.append(new PUSH(cp_gen, 0));
+	        	 il.append(new GOTO(lab2));
+	        	 
+	        	 il.append(list1);
+	        	 il.append(list2);
+	        	 
+	            break;
+
+	         default:
+	            System.out.println("ERROR: Unknown instruction opcode = "+op);
+	            break;
+	       }
+   }
+
+   //--------------------------------------------------------------------
+   //--------------------------------------------------------------------
+   //--------------------------------------------------------------------
+   // performs optimizations on InstructionList
+   //--------------------------------------------------------------------
+   //--------------------------------------------------------------------
+   //--------------------------------------------------------------------
+
+   public static void optimizeCode(InstructionList il)
+   {
+      InstructionHandle ih;
+      Instruction instruction;
+      int i, j, maxLocal;
+      bBlock[] cfg;                     // control flow graph
+
+      if (il == null)
+         return;
+
+      elimNops(il);
+      cfg = buildCFG(il);
+      calcLive(il, cfg);
+      maxLocal = findLocal(il);
+      printBasicBlocks(cfg);
+      printLiveRanges(il, cfg, maxLocal);
+      uninitializedVars(cfg, maxLocal);
+      elimDeadCode(il, cfg, maxLocal);
+   }
+
+   //--------------------------------------------------------------------
+   // eliminates NOPs in procedure
+
+   private static void elimNops(InstructionList il)
+   {
+      InstructionHandle ih, target;
+      Instruction instruction, targetInstr;
+      short tag;
+
+      ih = il.getStart();
+      while (ih != null) 
+      {
+         instruction = ih.getInstruction();
+
+         if (instruction instanceof BranchInstruction) 
+         {
+            BranchInstruction branch = (BranchInstruction) instruction;
+
+            target = branch.getTarget();
+            targetInstr = target.getInstruction();
+            tag = targetInstr.getOpcode();
+
+            while ((target != null) && (tag == NOP))
+            {
+               target = target.getNext();
+               if (target != null)
+               {
+                  targetInstr = target.getInstruction();
+                  tag = targetInstr.getOpcode();
+               }
+            }
+
+            if (target != null)
+               branch.setTarget(target);
+         }
+
+         ih = ih.getNext();
+      }
+
+
+      ih = il.getStart();
+      while (ih != null) 
+      {
+         instruction = ih.getInstruction();
+         tag = instruction.getOpcode();
+
+         if (tag == NOP)
+         {
+            target = ih;
+            ih = ih.getNext();
+
+            if (ih != null) 
+            {
+               try 
+               {
+                  il.delete(target);
+               }  
+               catch(TargetLostException e)
+               {
+                  e.printStackTrace();
+               }
+            }   
+         }
+         else
+         {
+            ih = ih.getNext();
+         }
+      }
+   }
+
+
+   //--------------------------------------------------------------------
+   // calculate largest local variable index
+
+   private static int findLocal(InstructionList il)
+   {
+      InstructionHandle ih;
+      Instruction instruction;
+      int idx, maxLocal;
+      short tag;
+
+      maxLocal = 0;
+      ih = il.getStart();
+      while (ih != null)
+      {
+          instruction = ih.getInstruction();
+          tag = instruction.getOpcode();
+
+          if (instruction instanceof LocalVariableInstruction)
+          {
+              LocalVariableInstruction x = (LocalVariableInstruction) instruction;
+
+              if ((tag >= ILOAD) && (tag < ISTORE))      // reads local var
+              {
+                  idx = x.getIndex();
+                  if (idx > maxLocal)
+                      maxLocal = idx;
+              }
+              else if ((tag >= ISTORE) && (tag < POP))   // writes local var
+              {
+                  idx = x.getIndex();
+                  if (idx > maxLocal)
+                      maxLocal = idx;
+              }
+          }
+          ih = ih.getNext();
+      }
+
+      return maxLocal;
+   }
+
+   //--------------------------------------------------------------------
+   // print out basic blocks
+
+   private static void printBasicBlocks(bBlock [] cfg)
+   {
+         int i = 0;
+         while (cfg[i].getLen() != 0)
+         {
+            cfg[i].print();
+            i++;
+         }
+         cfg[i].print();
+   }
+
+   //--------------------------------------------------------------------
+   // print live ranges
+
+   private static void printLiveRanges(InstructionList il, bBlock[] cfg, int maxLocal)
+   {
+       InstructionHandle ih;
+       Instruction instruction;
+       int i;
+
+       System.out.println("");
+       System.out.println("<<---- Live Ranges ---->>");
+
+       // print out instructions, their basic blocks and live variables
+
+         int bnum = 0;
+         ih = il.getStart();
+
+         while (ih != null)
+         {
+            if (ih == cfg[bnum+1].getFirstInstr())
+               bnum++;
+
+            if (bnum < 10)
+               System.out.print("[B "+bnum+"]  ");
+            else if (bnum < 100)
+               System.out.print("[B "+bnum+"] ");
+            else
+               System.out.print("[B "+bnum+"]");
+
+            System.out.print("[Live ");
+
+            BitSet in = cfg[bnum].getIn();
+
+            for (i = 0; i <= maxLocal; i++)
+            {
+                if (in.get(i))
+                {
+                   if (i < 10) System.out.print(" ");
+                   System.out.print(i);
+                   System.out.print(" ");
+                }
+                else
+                {
+                   System.out.print("   ");
+                }
+            }
+            System.out.print("]");
+
+            System.out.println(ih.toString(false));
+
+            ih = ih.getNext();
+         }
+   }
+
+   //--------------------------------------------------------------------
+   // warn about uninitialized variables
+
+   private static void uninitializedVars(bBlock[] cfg, int maxLocal)
+   {
+       int i;
+
+       BitSet bset = cfg[0].getIn();
+
+       for (i = 0; i <= maxLocal; i++)
+       {
+           if (bset.get(i))
+           {
+               System.out.println("");
+               System.out.println("WARNING: possible uninitialized local variable index "+i);
+           }
+       }
+   }
+
+
+//----------------------------------------------------
+//----------------------------------------------------
+//--- Modify code past this point for project 4
+//----------------------------------------------------
+//----------------------------------------------------
+
+   //--------------------------------------------------------------------
+   // build the (simplified single statement) control flow graph 
+
+   private static bBlock[] buildCFG(InstructionList il)
+   {
+      InstructionHandle ih, first, last, target;
+      Instruction instruction;
+      int i, j, bbNum, len;
+      short tag;
+      bBlock [] bb = new bBlock[1000];
+      bBlock b;
+
+      // build simplified basic blocks for individual statements
+
+      bbNum = 0;
+      ih = il.getStart();
+      while (ih != null)
+      {
+         b = new bBlock();
+         b.setNum(bbNum);
+         b.setFirst(ih);
+         b.setLast(ih);
+         b.setLen(1);
+         bb[bbNum] = b;
+
+         ih = ih.getNext();
+         bbNum++;
+      }
+
+      bb[bbNum] = new bBlock();      // set up last bBlock for end of procedure
+      bb[bbNum].setNum(bbNum);
+
+      // add successor edges between basic blocks
+
+      for (i = 0; i<bbNum; i++)
+      {
+
+// WORK: this code currently assumes all instructions execute in order
+// WORK: you need to build correct control flow graph for IF, GOTO, RETURN
+
+//bb[i].setSucc(bb[i+1]);   delete this statement once you handle the 4 following cases!
+
+         ih = bb[i].getLastInstr();
+
+         instruction = ih.getInstruction();
+         tag = instruction.getOpcode();
+
+         if (instruction instanceof BranchInstruction) 
+         {
+            BranchInstruction branch = (BranchInstruction) instruction;
+
+            if (branch instanceof IfInstruction)
+            {
+               bb[i].setSucc(bb[i+1]);
+               target = branch.getTarget();
+               int pos = targetPosIndex(target.getPosition(), bb, bbNum);
+               bb[i].setSucc(bb[pos]);
+
+// WORK: insert code for IF instruction
+
+            }
+            else if ((tag == GOTO) || (tag == GOTO_W))
+            {
+               target = branch.getTarget();
+               int pos = targetPosIndex(target.getPosition(), bb, bbNum);
+               bb[i].setSucc(bb[pos]);
+
+// WORK: insert code for GOTO instruction
+
+            }
+            else
+            {
+               System.out.println("ERROR: unexpected leader "+ih.toString());
+            }
+         }
+         else if (instruction instanceof ReturnInstruction)
+         {
+
+// WORK: insert code for RETURN instruction
+        	 bb[i].setSucc(bb[bbNum]);
+
+         }
+         else 
+         {
+
+// WORK: insert code for other instructions
+        	 bb[i].setSucc(bb[i+1]);
+
+         }
+      }
+
+      return bb;
+   }
+
+   //--------------------------------------------------------------------
+   // calculate LIVE ranges
+
+   private static void calcLive(InstructionList il, bBlock[] bb)
+   {
+      InstructionHandle ih, first, last, target;
+      Instruction instruction;
+      int i, j, bbNum, idx;
+      short tag;
+      BitSet bset, emptyBset, in, out; 
+      bBlock succ;
+      boolean done, change;
+
+      bset = new BitSet();
+      emptyBset = new BitSet();
+
+      //----------------------------------
+      // calculate local information for each basic block
+
+      i = 0;
+      while ( bb[i].getLen() != 0 )     // last basic block representing exit 
+      {
+          ih = bb[i].getFirstInstr();
+
+          for (j = 0; j < bb[i].getLen(); j++)
+          {
+              instruction = ih.getInstruction();
+              tag = instruction.getOpcode();
+
+              if (instruction instanceof LocalVariableInstruction)
+              {
+                  LocalVariableInstruction x = (LocalVariableInstruction) instruction;
+
+                  if ((tag >= ILOAD) && (tag < ISTORE))   // reads
+                  {
+                      idx = x.getIndex();    // index of local variable read
+                      
+// WORK: handle LOAD of local variable
+
+                  }
+                  else if ((tag >= ISTORE) && (tag < POP))   // writes
+                  {
+                      idx = x.getIndex();    // index of local variable written
+
+// WORK: handle WRITE to local variable
+
+                  }
+                  else 
+                  {
+                       System.out.println("ERROR: illegal LocalVariableInstruction "
+                               +ih.toString());
+                  }
+              }
+
+              ih = ih.getNext();
+          }
+          i++;
+      }
+
+      bbNum = i+1;     // number of basic blocks
+
+      //----------------------------------
+      // initialize IN 
+
+      for (i = 0; i < bbNum; i++)
+      {
+
+// WORK: initialize IN for basic block based on local information
+
+      }
+
+      //----------------------------------
+      // propagate information over CFG
+
+      // for LIVE, the dataflow equations are
+
+      //   IN = gen U (OUT - kill) 
+
+      //   OUT = U      ( IN     )
+      //                    succ
+
+      change = true;
+
+      while (change)
+      {
+          change = false;
+
+          for (i = 0; i < bbNum; i++)
+          {
+              bset.and(emptyBset);                   // clear bset
+
+              succ = bb[i].getSucc();
+              while (succ != null)
+              {
+
+// WORK: calculate new OUT based on information from each predecessor (store in bset)
+
+                  succ = bb[i].getSuccNext();
+              }
+
+              out = bb[i].getOut();
+
+              if (!bset.equals(out))     // compare new OUT with old OUT
+              {
+
+// WORK: calculate new IN based on new OUT (in bset) and local information
+// WORK: update IN & OUT for basic block
+
+                  change = true;
+              }
+          }
+      }
+   }
+
+   //--------------------------------------------------------------------
+   // eliminate dead code
+
+   private static void elimDeadCode(InstructionList il, bBlock[] bb, int maxLocal)
+   {
+
+// WORK: look for dead ISTOREs and replace with POP
+
+   }
+   
+   private static int targetPosIndex(int target_pos, bBlock[] all, int lastBlock){
+	   
+	   for(int i=0;i<lastBlock;i++){
+		   
+		   	if(target_pos == all[i].getFirstInstr().getPosition()){
+		   		
+		   		return i;
+		   		
+		   	}
+		   
+	   }
+	
+	   System.out.println("not found");
+	   return 0;
+	   
+   }
+
+}

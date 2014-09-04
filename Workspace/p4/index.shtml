@@ -1,0 +1,335 @@
+
+<!--#include virtual="header.html" -->
+ 
+<h1 class="title">Project 4 - C-- : Byte Code Analyzer</h1>
+<center>
+Due 11:59pm Mon, May 12th, 2014<br>
+</center>
+
+<p>
+<h2>Introduction</h2>
+
+<p>
+In this project you will add some global
+data-flow analysis to your C-- compiler.
+
+<p>
+<h2>Getting Started</h2>
+
+Project 4 will be implemented in Java in Eclipse. 
+Download the following file:
+
+<ul>
+<li> Eclipse project archive file <a href="p4.zip">p4.zip</a>
+</ul>
+
+You can import the project into Eclipse as an existing project 
+in an archive file. 
+
+<p>
+Along with files used to make direct submissions to the
+submit server (<a href="submit.jar">submit.jar</a>,
+<a href=".submit">.submit</a>), you will
+find the following project files:
+</p><ul>
+<li>Java files
+<ul>
+<li><a href="mycc/ClassFile.java">ClassFile.java</a>
+<li><a href="mycc/bBlock.java">bBlock.java</a>
+<li> <a href="tests/PublicTests.java">PublicTests.java</a>
+<li> <a href="tests/StudentTests.java">StudentTests.java</a>
+<li> <a href="tests/TestMycc.java">TestMycc.java</a>
+</ul>
+<li>Csh scripts
+<ul>
+<li> <a href="goPublic">goPublic</a> - executes public tests
+<li> <a href="goStudent">goStudent</a> - executes student tests
+<li> <a href="goAll">goAll</a> - builds compiler and executes public & student tests
+<li> <a href="goSubmit">goSubmit</a> - submits ClassFile.java using submit.jar
+</ul>
+</li><li>Public tests
+<ul>
+<li> <a href="test01.c">test01.c</a>
+<li> <a href="test02.c">test02.c</a>
+<li> <a href="test03.c">test03.c</a>
+<li> <a href="test04.c">test04.c</a>
+<li> <a href="test05.c">test05.c</a>
+<li> <a href="test06.c">test06.c</a>
+<li> <a href="test07.c">test07.c</a>
+</ul>
+</li><li>Public test outputs 
+<ul>
+<li> <a href="opt01.out">opt01.out</a>
+<li> <a href="opt02.out">opt02.out</a>
+<li> <a href="opt03.out">opt03.out</a>
+<li> <a href="opt04.out">opt04.out</a>
+<li> <a href="opt05.out">opt05.out</a>
+<li> <a href="opt06.out">opt06.out</a>
+<li> <a href="opt07.out">opt07.out</a>
+</ul>
+</li><li>Student test outputs 
+<ul>
+<li> <a href="test01.out">test01.out</a>
+<li> <a href="test02.out">test02.out</a>
+<li> <a href="test03.out">test03.out</a>
+<li> <a href="test04.out">test04.out</a>
+<li> <a href="test05.out">test05.out</a>
+<li> <a href="test06.out">test06.out</a>
+<li> <a href="test07.out">test07.out</a>
+</ul>
+</ul>
+</ul>
+
+
+<h3>Changes</h3>
+<p>
+See project 1 <a href="../p1">description</a> for description of project
+files and syntax/semantics of C--.  Compared to project 3, there are some
+changes:
+
+<ul>
+<li> 
+<a href="ClassFile.java">ClassFile.java</a> now contains skeleton 
+code to perform global data-flow analysis</a>
+<li>
+<a href="bBlock.java">bBlock.java</a> contains code to represent
+and manipulate basic blocks
+<li>
+Public/release tests are now applied directly to sequences of 
+Java byte codes.  Tests only rely on optimizeCode() in ClassFile.java,
+and do not use your mycc compiler or code generator.  The byte
+code sequences used for public tests specified in 
+TestMycc.java are generated from test*.c.
+Your optimizer output for public tests are put in opt*.log
+and should be compared to opt*.out.
+<li> 
+You may still use your mycc compiler to generate additional
+test cases for your data-flow analysis code. Student tests
+show examples of how to test your compiler on C-- code.
+Examples of expected outputs are shown in test*.out.
+Your output may differ from example outputs if your code
+generator generates different Java byte code sequences.
+</ul>
+
+</ul>
+
+You should not need to make any changes to your 
+scanner, parser, or type checker to perform code generation.
+<p>
+
+<p>
+</p><h2>Requirements</h2>
+
+You are given a skeleton data flow analyzer for calculating live variables.
+The existing code builds a simplified control flow graph (CFG) assuming all
+statements are in a single basic block.  It then performs iterative data-flow 
+analysis on the (reverse) CFG, but lacks code to compute local effects and 
+propagate data-flow information between basic blocks.
+
+
+<h3>Data-flow framework</h3>
+
+Your must extend the compiler to implement a global data-flow analysis
+framework.  To begin with, you must build the control flow graph correctly 
+in the presence of control flow (i.e., handle IF, GOTO, and RETURN statements) 
+
+For simplicity, you can put every statement in its own basic block.
+
+Existing code in the compiler will display the control-flow graph
+as a list of basic blocks, with lists of predecessor & successors.
+
+<h3>Live Variables</h3>
+
+Next you must compute data flow information to solve the live variable problem
+  for all local scalar variables (you can ignore arrays & global vars)
+
+<ul>
+
+<li> insert code to compute local information (i.e., GEN and KILL)
+         by looking for ILOAD and ISTORE instructions
+
+<li> merge information at joins (combine data to compute OUT for 
+         each basic block) 
+
+<li> propagate information through the basic block (compute IN from 
+         OUT and local information)
+
+<li> ensure the iterative framework is properly initialized and halts
+</ul>
+
+  Existing code in the compiler will display the data-flow information
+  for each basic blocks, and will also use the IN set for the first
+  basic block to warn of possible references to uninitialized variables.
+
+
+<h3>Dead code elimination</h3>
+
+Finally, you must use live variable information to eliminate 
+dead stores for local scalar variables (ISTOREs).  These instructions 
+should be replaced with POP instructions.  A more sophisticated 
+implementation would actually eliminate the computations, but is 
+not necessary.
+
+<p>
+
+
+<h2>Useful Classes</h2>
+
+<h3> BitSet (from java.util.BitSet) </h3>
+
+BitSet is used to represent data-flow information in each basic block.
+A bit at position X is set to represent information about local variable 
+at index X.
+
+BitSet has the following methods:
+
+
+<pre>
+ void and(BitSet set) 
+    Performs a logical AND of this target bit set with the argument bit set. 
+
+ void andNot(BitSet set) 
+    Clears all of the bits in this BitSet whose corresponding bit is set in the specified BitSet. 
+
+ void clear(int bitIndex) 
+    Sets the bit specified by the index to false. 
+
+ Object clone() 
+    Cloning this BitSet produces a new BitSet that is equal to it. 
+
+ boolean equals(Object obj) 
+    Compares this object against the specified object. 
+
+ boolean get(int bitIndex) 
+    Returns the value of the bit with the specified index. 
+
+ void or(BitSet set) 
+    Performs a logical OR of this bit set with the bit set argument. 
+
+ void set(int bitIndex) 
+    Sets the bit specified by the index to true. 
+
+ void xor(BitSet set) 
+    Performs a logical XOR of this bit set with the bit set argument. 
+</pre>
+
+
+<h3> bBlock </h3>
+
+bBlock is used to represent an individual basic block.  It maintains
+its connections to other bBlocks, and uses BitSets to store data-flow
+information.
+
+bBlock has the following fields and methods:
+
+<pre>
+   int               num;     // number for basic block
+   int               len;     // number of instructions in basic block
+
+   InstructionHandle first;   // first instruction in basic block
+   InstructionHandle last;    // last instruction in basic block
+
+   bBlock []         pred;    // predecessors
+   bBlock []         succ;    // successors
+
+   BitSet          in;        //
+   BitSet         out;        //
+   BitSet         gen;        //
+   BitSet        kill;        //
+
+   int               currPred;     // iterator: number of current predecessor
+   int               currSucc;     // iterator: number of current successor
+
+   public void setSucc(bBlock bb)  // add bb to successors, updates bb's predecessors
+   public void setPred(bBlock bb)  // add bb to predecessors, updates bb's successors
+
+   public bBlock getSucc()         // used together to iterate over all successors
+   public bBlock getSuccNext() 
+</pre>
+
+control flow graph ( bBlock[] cfg )
+
+The CFG is simply represented by an array of bBlocks.
+By convention, blocks are kept in the order of the original
+code for 0..X, with an extra bBlock at X+1 (with 0 instructions)
+to represent the end of the procedure.  
+
+<h2>Submission</h2>
+
+The only file you need to submit is ClassFile.java.
+You can submit your project in two ways:
+
+<ul> 
+<li>
+Submit ClassFile.java using
+the <a href="http://submit.cs.umd.edu/">submit server</a> 
+by clicking on the submit link in the column "web submission".
+
+<p>
+<img src="submit1.jpg">
+</p><p>
+ 
+</p><p>
+<img src="submit2.jpg">
+</p><p>
+ 
+Select ClassFile.java using the "Browse" button,
+then press the "Submit project!" button.
+</p><p>
+</p></li><li>
+
+</li><li>
+Submit directly by executing a Java program on a computer
+with Java and network access.  Use the submit.jar file
+from the archive <a href="p4.zip">p4.zip</a>,
+To submit, place ClassFile.java and submit.jar in the same directory,
+then execute goSubmit or type the following command directly:
+<p>
+
+<center>
+<tt>
+java -jar submit.jar
+</tt>
+</center>
+<p>
+
+You will be asked to enter your class account and password, then
+all files in the directory (and its subdirectories) will be
+put in a jar file and submitted to the submit server.
+If your submission is successful you will see the message:
+</p><p>
+
+</p><center>
+<tt>
+Successful submission #<submission_number> received for project 4
+</submission_number></tt>
+</center>
+<p>
+
+</p></li></ul>
+
+<h2>Academic Integrity</h2>
+
+<p>
+
+</p><p>
+Please <b>carefully read</b> the academic honesty section of the
+course syllabus.  In particular, remember that you are not allowed
+to show or copy any code for your project, either from the web or 
+other students. <b>Any evidence</b> of impermissible cooperation on
+projects, use of disallowed materials or resources, or unauthorized
+use of computer accounts, <b>will be submitted</b> to the Student
+Honor Council, which could result in an XF for the course, or
+suspension or expulsion from the University.  Be sure you understand
+what you are and what you are not permitted to do in regards to
+academic integrity when it comes to project assignments.  These
+policies apply to all students, and the Student Honor Council does not
+consider lack of knowledge of the policies to be a defense for
+violating them.  Full information is found in the course
+syllabus---please review it at this time.
+
+
+</p></td>
+</tr></tbody></table>
+
+</body></html>

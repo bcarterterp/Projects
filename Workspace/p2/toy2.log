@@ -1,0 +1,41 @@
+1: 
+2: int x;
+3: 
+4: int f( ) 
+5: {
+6: 	int y;
+7: 
+8: 	x = 1;
+9: 	y = x + 2;
+ERROR(10) requires boolean
+10: 	if (x) 
+11: 	{
+12: 		y = 3;
+13: 	}
+14: }
+** Global Variables **
+f, int, function, param = <void>
+printInt, void, function, param = int
+printLn, void, function, param = <void>
+printStr, void, function, param = String
+x, int
+y, int
+** Local Variables in f() **
+f, int, function, param = <void>
+printInt, void, function, param = int
+printLn, void, function, param = <void>
+printStr, void, function, param = String
+x, int
+y, int
+TREE_PROC: f
+{
+    TREE_INSTR: x = 1
+    TREE_INSTR: y = (x PLUS 2)
+  TREE_IF: CONDITION: x
+{
+    TREE_INSTR: y = 3
+}
+  END_IF 
+}
+END_PROC
+

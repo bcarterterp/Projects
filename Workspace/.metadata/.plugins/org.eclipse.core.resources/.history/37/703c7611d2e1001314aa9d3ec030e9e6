@@ -1,0 +1,43 @@
+package iam.too.toolazy;
+
+import android.os.Bundle;
+import android.app.Activity;
+import android.view.Menu;
+import android.widget.Button;
+
+public class PowerOff extends Activity {
+	
+	String buttonText = "OFF";
+	Button powerSwitch;
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_power_off);
+		powerSwitch = (Button) findViewById(R.id.powerSwitch);
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.power_off, menu);
+		return true;
+	}
+	
+	public void changeStatus(){
+		
+		if(buttonText.equalsIgnoreCase("off")){
+			
+			buttonText = "ON";
+			
+		}else{
+			
+			buttonText = "OFF";
+			
+		}
+		
+		powerSwitch.setText(buttonText);
+		
+	}
+
+}

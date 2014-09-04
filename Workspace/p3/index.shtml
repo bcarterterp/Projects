@@ -1,0 +1,278 @@
+<!--#include virtual="header.html" -->
+ 
+<h1 class="title">Project 3 - C-- : Byte Code Generator</h1>
+<center>
+Due 11:59pm Wed, April 23th, 2014<br>
+</center>
+
+<p>
+<h2>Introduction</h2>
+
+<p>
+In this project you will add to your C-- compiler the
+ability to generate Java byte codes for the input program,
+and perform some simple peephole optimizations.
+
+<p>
+<h2>Getting Started</h2>
+
+Project 3 will be implemented in Java in Eclipse. 
+Download the following files:
+
+<ul>
+<li> Eclipse project archive file <a href="p3.zip">p3.zip</a>
+<li> Archive <a href="code.out.zip">code.out.zip</a> containing
+sample byte code outputs from "javap -c"
+
+</ul>
+
+You can import the project into Eclipse as an existing project 
+in an archive file. 
+
+<h3>Changes</h3>
+<p>
+See project 1 <a href="../p1">description</a> for description of project
+files and syntax/semantics of C--.  Compared to project 2, there is one
+major change:
+
+<ul>
+<li> <a href="mycc/ClassFile.java">ClassFile.java</a>
+<ul>
+<li> Now contains skeleton code to generate Java byte codes from an
+AST, using the JavaClass library from 
+<a href="http://jakarta.apache.org/bcel/">
+BCEL (Byte Code Engineering Library)
+</a>.
+</ul>
+
+</ul>
+
+You should not need to make any changes to your 
+scanner, parser, or type checker to perform code generation.
+<p>
+
+<h3>Building & Running Your C-- Compiler</h3>
+<pre>
+** To build your mycc compiler 
+
+        java JLex.Main mycc.lex
+        mv -f mycc.lex.java mycc/Yylex.java
+        java java_cup.Main mycc.cup
+	mv -f sym.java mycc/sym.java
+	mv -f parser.java mycc/parser.java
+        javac -g -d . mycc/*.java
+
+** To compile a C-- program foo.c using mycc
+
+        java mycc.parser foo.c 
+
+** To compile a C-- program foo.c using mycc, with optimizations turned on
+
+        java mycc.parser -O foo.c 
+
+** To examine the byte code produced by mycc
+
+        javap -c foo.class
+
+** To run the code produced by mycc
+
+        java foo
+</pre>
+
+The compiler will generate a Java class file <prog>.class for an input file 
+named <prog>.c.   You can examine the contents of the class file using 
+"javap -c" to disassemble the class file.  
+
+<p>
+The archive <a href="code.out.zip">code.out.zip</a> contains 
+some sample byte code outputs of "javap -c" for the class file 
+produced for the public test C-- files.
+
+<p>
+</p><h2>Requirements</h2>
+
+<h3>Code Generation</h3>
+
+<p>
+Your main goal is to build a back end for C-- to generate Java byte codes from 
+the AST created in project 2.  You will use the skeleton back end in the file 
+ClassFile.java, inserting calls to routines from the JavaClass libraries to
+generate a sequence of Java byte codes.  You will also use information from
+your project 2 symbol table to assign storage for variables in your program.
+
+<p>
+You may assume that all input C-- programs are syntactically correct
+and without type errors.  
+<p>
+
+<h3>Peephole Optimizations</h3>
+
+<p>
+In addition, you need to add the following simple peephole optimizations 
+to your C-- compiler:
+
+<ul>
+<li>evaluate constant arithmetic expressions (e.g., 1+2 -> 3)
+<li>apply algebraic simplification (e.g., 0+x -> x)
+<li>fold constant relational expressions (e.g., 1 == 1 -> true)
+<li>simplify boolean expressions (e.g., true && x -> x)
+<li>simplify IF statements (e.g., IF (true) stmt1 ELSE stmt2 -> stmt1)
+</ul>
+
+<p>
+You must perform all your peephole optimizations at the AST level.
+You may do this in mycc.cup while generating your AST, or as a
+separate pass over the AST in ClassFile.java.
+
+<p>
+
+
+
+
+<h2>Main Classes</h2>
+
+<h3> ClassFile </h3>
+
+Documentation on Java bytecodes and the JavaClass library is available from 
+the class web page.  Be sure to take a quick look before starting the project.
+
+The procedures you need to implement in the compiler backend are:
+
+<pre>
+  genProcCode()      Generate code for a procedure.  Allocate storage for local 
+                     variables, then create code as a list of instructions.
+
+  genInstCode()      Generate code for a C-- astNode representing
+                     TREE_BLOCK, TREE_IF or TREE_WHILE statements.
+
+  genExpCode()       Generate code for a C-- expNode representing
+                     a single TREE_INSTRUCTION
+
+  genOpCode()        Generate code for a C-- expNode representing an operand
+</pre>
+
+The main data structure you will be manipulating is the InstructionList class.
+It maintains a list of Java byte code instruction equivalents that make up 
+the output of the compiler back end.  New instructions may be added to the list,
+and other InstructionLists may also be appended to existing list.  New java byte
+codes instructions are created through constructors and added to an InstructionList.
+
+For instance, given the instruction list x, we can add a new instruction as 
+follows:
+
+<pre>
+   InstructionList x;
+
+   genExpCode(x, op1);    // generate instructions for first operand, append to x
+   genExpCode(x, op2);    // generate instructions for 2nd operand, append to x
+   x.append(new IADD());  // generate IADD instruction, append to x
+</pre>
+
+The append() function also returns an InstructionHandle (label) that can be
+used when generating conditional branch instructions:
+
+<pre>
+   InstructionList x, y;
+   InstructionHandle label;
+
+   label = x.append(new NOP());   // returns label for conditional branch targets
+   y.append(new IFEQ(labe1));     // create new conditional branch instruction 
+</pre>
+
+<h2>Submission</h2>
+
+You can submit your project in two ways:
+
+<ul> 
+<li>
+Submit your mycc.lex, mycc.cup, and ClassFile.java files by
+first putting all files in a single .zip or .jar archive.
+The files should be at the top level of the archive,
+not in a subdirectory.  
+<p>
+You may create a jar archive containing mycc.cup, mycc.lex, and ClassFile.java
+by going to the directory containing your project.  You 
+need to copy mycc/ClassFile.java into the same directory as
+mycc.cup & mycc.lex, then either execute goJar (or goJar.bat) 
+or type the following command directly to create the archive p3.jar:
+<p>
+
+<center>
+<tt>
+jar cf p3.jar mycc.cup mycc.lex ClassFile.java
+</tt>
+</center>
+<p>
+
+You can submit the resulting p3.jar archive to 
+to the <a href="http://submit.cs.umd.edu/">submit server</a> 
+by clicking on the submit link in the column "web submission".
+
+<p>
+<img src="submit1.jpg">
+</p><p>
+ 
+</p><p>
+<img src="submit2.jpg">
+</p><p>
+ 
+Select the p3.jar archive using the "Browse" button,
+then press the "Submit project!" button.
+</p><p>
+</p></li><li>
+
+</li><li>
+Submit directly by executing a Java program on a computer
+with Java and network access.  Use the submit.jar file
+from the archive <a href="p3.zip">p3.zip</a>,
+To submit, go to the directory containing your project, then either
+execute goSubmit (or goSubmit.bat) or type the following command directly:
+<p>
+
+<center>
+<tt>
+java -jar submit.jar
+</tt>
+</center>
+<p>
+
+You will be asked to enter your class account and password, then
+all files in the directory (and its subdirectories) will be
+put in a jar file and submitted to the submit server.
+If your submission is successful you will see the message:
+</p><p>
+
+</p><center>
+<tt>
+Successful submission #<submission_number> received for project 3
+</submission_number></tt>
+</center>
+<p>
+
+</p></li></ul>
+
+<h2>Academic Integrity</h2>
+
+<p>
+
+</p><p>
+Please <b>carefully read</b> the academic honesty section of the
+course syllabus.  In particular, remember that you are not allowed
+to show or copy any code for your project, either from the web or 
+other students. <b>Any evidence</b> of impermissible cooperation on
+projects, use of disallowed materials or resources, or unauthorized
+use of computer accounts, <b>will be submitted</b> to the Student
+Honor Council, which could result in an XF for the course, or
+suspension or expulsion from the University.  Be sure you understand
+what you are and what you are not permitted to do in regards to
+academic integrity when it comes to project assignments.  These
+policies apply to all students, and the Student Honor Council does not
+consider lack of knowledge of the policies to be a defense for
+violating them.  Full information is found in the course
+syllabus---please review it at this time.
+
+
+</p></td>
+</tr></tbody></table>
+
+</body></html>

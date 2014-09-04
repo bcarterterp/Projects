@@ -1,0 +1,216 @@
+207: //  Test function calls
+208: 
+209: int stack[100];
+210: int top;
+211: 
+212: // Stack API
+213: 
+214: void initStack()
+215: {
+216:     top = -1;
+217: }
+218: 
+219: int pop()
+220: {
+221:     int x;
+222: 
+223:     if (top == -1) 
+224:     {
+225:         printStr("ERROR: pop() empty stack");
+226:         printLn();
+227:         return 0;
+228:     }
+229: 
+230:     x = stack[top];
+231:     top = top - 1;
+232:     return x;
+233: }
+234: 
+235: void push( int x )
+236: {
+237:     top = top + 1;
+238:     if (top == 100) 
+239:     {
+240:         printStr("ERROR: push() full stack");
+241:         printLn();
+242:         return;
+243:     }
+244: 
+245:     stack[top] = x;
+246:     return;
+247: }
+248: 
+249: void iadd()
+250: {
+251:     int x, y;
+252:     y = pop();
+253:     x = pop();
+254:     push( x + y );
+255: }
+256: 
+257: void isub()
+258: {
+259:     int x, y;
+260:     y = pop();
+261:     x = pop();
+262:     push( x - y );
+263: }
+264: 
+265: // Main routine
+266: 
+267: void main()
+268: {
+269:      initStack();
+270: 
+271:      printStr("Result should be: -2 4"); 
+272:      printLn();
+273: 
+274:      push(5);
+275:      push(4);
+276:      push(3);
+277:      iadd();
+278:      isub();
+279:      printInt(pop());
+280:      printLn();
+281: 
+282:      push(105);
+283:      push(104);
+284:      push(103);
+285:      push(102);
+286:      iadd();
+287:      isub();
+288:      iadd();
+289:      printInt(pop());
+290:      printLn();
+291: 
+292:      return;
+293: }
+294: 
+** Global Variables **
+iadd, void, function, param = <void>
+initStack, void, function, param = <void>
+isub, void, function, param = <void>
+main, void, function, param = <void>
+pop, int, function, param = <void>
+printInt, void, function, param = int
+printLn, void, function, param = <void>
+printStr, void, function, param = String
+push, void, function, param = int
+stack, int, array
+top, int
+** Local Variables in iadd() **
+{
+x, int
+y, int
+}
+** Local Variables in initStack() **
+{
+}
+** Local Variables in isub() **
+{
+x, int
+y, int
+}
+** Local Variables in main() **
+{
+}
+** Local Variables in pop() **
+{
+x, int
+{
+}
+}
+** Local Variables in push() **
+x, int
+{
+{
+}
+}
+TREE_PROC: initStack
+{
+    TREE_INSTR: top = -1
+}
+END_PROC
+
+TREE_PROC: pop
+{
+  TREE_IF: CONDITION: (top EQ_OP -1)
+{
+    TREE_INSTR: CALL printStr("ERROR: pop() empty stack")
+    TREE_INSTR: CALL printLn()
+    TREE_INSTR:  RETURN 0
+}
+  END_IF 
+    TREE_INSTR: x = stack[top]
+    TREE_INSTR: top = (top MINUS 1)
+    TREE_INSTR:  RETURN x
+}
+END_PROC
+
+TREE_PROC: push
+{
+    TREE_INSTR: top = (top PLUS 1)
+  TREE_IF: CONDITION: (top EQ_OP 100)
+{
+    TREE_INSTR: CALL printStr("ERROR: push() full stack")
+    TREE_INSTR: CALL printLn()
+    TREE_INSTR:  RETURN 
+}
+  END_IF 
+    TREE_INSTR: stack[top] = x
+    TREE_INSTR:  RETURN 
+}
+END_PROC
+
+TREE_PROC: iadd
+{
+    TREE_INSTR: y = CALL pop()
+
+    TREE_INSTR: x = CALL pop()
+
+    TREE_INSTR: CALL push((x PLUS y))
+}
+END_PROC
+
+TREE_PROC: isub
+{
+    TREE_INSTR: y = CALL pop()
+
+    TREE_INSTR: x = CALL pop()
+
+    TREE_INSTR: CALL push((x MINUS y))
+}
+END_PROC
+
+TREE_PROC: main
+{
+    TREE_INSTR: CALL initStack()
+    TREE_INSTR: CALL printStr("Result should be: -2 4")
+    TREE_INSTR: CALL printLn()
+    TREE_INSTR: CALL push(5)
+    TREE_INSTR: CALL push(4)
+    TREE_INSTR: CALL push(3)
+    TREE_INSTR: CALL iadd()
+    TREE_INSTR: CALL isub()
+    TREE_INSTR: CALL printInt(CALL pop()
+)
+    TREE_INSTR: CALL printLn()
+    TREE_INSTR: CALL push(105)
+    TREE_INSTR: CALL push(104)
+    TREE_INSTR: CALL push(103)
+    TREE_INSTR: CALL push(102)
+    TREE_INSTR: CALL iadd()
+    TREE_INSTR: CALL isub()
+    TREE_INSTR: CALL iadd()
+    TREE_INSTR: CALL printInt(CALL pop()
+)
+    TREE_INSTR: CALL printLn()
+    TREE_INSTR:  RETURN 
+}
+END_PROC
+
+ERROR(295) expNode is not an Identifier 
+** Executing test08.class **
+Result should be: -2 4
+-2
+4

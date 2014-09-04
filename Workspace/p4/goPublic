@@ -1,0 +1,11 @@
+#!/bin/csh
+rm -f opt*.log
+javac -g -d . mycc/ClassFile.java
+foreach prog (CFG1 CFG2 Live1 Live2 Live3 Live4 Init1 Dead1)
+        echo "////////////////////////////////////////////////////"
+        echo "///////////// test$prog //////////////////////"
+        echo "////////////////////////////////////////////////////"
+        java tests/TestMycc test$prog 
+        echo ""
+end
+

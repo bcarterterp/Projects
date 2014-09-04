@@ -1,0 +1,111 @@
+21: // test control flow statements
+22: int x,y;
+23: void main ( )
+24: {
+25:    int a,b;
+26:    x = 1;
+27:    y = 2;
+28:    a = 3;
+29:    b = 4;
+30: 
+31:    printStr("Results should be : 2 7 1 2 3 4 ");
+32:    printLn();
+33: 
+34:    if (x == 3) { 
+35:        printStr("Error 1"); 
+36:    }
+37:    if (y != 2)  { 
+38:        printStr("Error 2"); 
+39:    }
+40:    else { 
+41:        printInt(y); 
+42:        printStr(" ");
+43:    }
+44:    if (1 == 1) {
+45:        printInt( a + b ); 
+46:        printStr(" ");
+47:    }
+48:    else { 
+49:        printStr("Error 3"); 
+50:        printStr(" ");
+51:    }
+52:    while (x != 5) {
+53:        printInt(x);
+54:        printStr(" ");
+55:        x = x + 1;
+56:    } 
+57:    printLn(); 
+58: }
+59: 
+** Global Variables **
+main, void, function, param = <void>
+printInt, void, function, param = int
+printLn, void, function, param = <void>
+printStr, void, function, param = String
+x, int
+y, int
+** Local Variables in main() **
+{
+a, int
+b, int
+{
+}
+{
+}
+{
+}
+{
+}
+{
+}
+{
+}
+}
+TREE_PROC: main
+{
+    TREE_INSTR: x = 1
+    TREE_INSTR: y = 2
+    TREE_INSTR: a = 3
+    TREE_INSTR: b = 4
+    TREE_INSTR: CALL printStr("Results should be : 2 7 1 2 3 4 ")
+    TREE_INSTR: CALL printLn()
+  TREE_IF: CONDITION: (x EQ_OP 3)
+{
+    TREE_INSTR: CALL printStr("Error 1")
+}
+  END_IF 
+  TREE_IF: CONDITION: (y NE_OP 2)
+{
+    TREE_INSTR: CALL printStr("Error 2")
+}
+  ELSE: 
+{
+    TREE_INSTR: CALL printInt(y)
+    TREE_INSTR: CALL printStr(" ")
+}
+  END_IF 
+  TREE_IF: CONDITION: (1 EQ_OP 1)
+{
+    TREE_INSTR: CALL printInt((a PLUS b))
+    TREE_INSTR: CALL printStr(" ")
+}
+  ELSE: 
+{
+    TREE_INSTR: CALL printStr("Error 3")
+    TREE_INSTR: CALL printStr(" ")
+}
+  END_IF 
+  TREE_WHILE: CONDITION: (x NE_OP 5)
+{
+    TREE_INSTR: CALL printInt(x)
+    TREE_INSTR: CALL printStr(" ")
+    TREE_INSTR: x = (x PLUS 1)
+}
+  END_WHILE 
+    TREE_INSTR: CALL printLn()
+}
+END_PROC
+
+** Executing test03.class **
+Results should be : 2 7 1 2 3 4 
+2 7 1 2 3 4 

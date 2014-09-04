@@ -1,0 +1,61 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.32"/>
+	<TextView 
+	    android:id="@+id/wordType"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"/>
+	<TextView 
+	    android:id="@+id/score"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"/>
+	<HorizontalScrollView 
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:scrollbars="none">
+	<LinearLayout 
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:orientation="horizontal"
+	    android:id="@+id/linlayout">
+	</LinearLayout>
+	</HorizontalScrollView>
+
+	<LinearLayout 
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:orientation="horizontal">
+	<Button
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:text="Submit"
+	    android:onClick="createWord"
+	    android:id="@+id/submit"/>
+	<Button
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:text="Backspace"
+	    android:onClick="removeLast"
+	    android:id="@+id/backspace"/>
+	<Button
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:text="Clear"
+	    android:onClick="clearWord"
+	    android:id="@+id/clear"/>
+	<Button
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:text="Repick"
+	    android:id="@+id/rePick"/>
+	</LinearLayout>
+
+</LinearLayout>

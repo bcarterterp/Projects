@@ -1,0 +1,74 @@
+60: // test functions and parameter passing
+61: 
+62: int factorial ( int f )
+63: {
+64:    if ((f == 0) || (f == 1)) {
+65:       return 1;
+66:    }
+67:    f = f * factorial(f - 1);
+68:    return f;
+69: }
+70:  
+71: void main ( ) 
+72: {
+73:    int z;
+74: 
+75:    printStr("Results should be : 6 720");
+76:    printLn();
+77: 
+78:    z = factorial(3);
+79:    printInt(z);
+80:    printStr(" ");
+81: 
+82:    z = factorial(6);
+83:    printInt(z);
+84:    printLn();
+85: }
+86: 
+** Global Variables **
+factorial, int, function, param = int
+main, void, function, param = <void>
+printInt, void, function, param = int
+printLn, void, function, param = <void>
+printStr, void, function, param = String
+** Local Variables in factorial() **
+f, int
+{
+{
+}
+}
+** Local Variables in main() **
+{
+z, int
+}
+TREE_PROC: factorial
+{
+  TREE_IF: CONDITION: ((f EQ_OP 0) OR_OP (f EQ_OP 1))
+{
+    TREE_INSTR:  RETURN 1
+}
+  END_IF 
+    TREE_INSTR: f = (f MUL CALL factorial((f MINUS 1))
+)
+    TREE_INSTR:  RETURN f
+}
+END_PROC
+
+TREE_PROC: main
+{
+    TREE_INSTR: CALL printStr("Results should be : 6 720")
+    TREE_INSTR: CALL printLn()
+    TREE_INSTR: z = CALL factorial(3)
+
+    TREE_INSTR: CALL printInt(z)
+    TREE_INSTR: CALL printStr(" ")
+    TREE_INSTR: z = CALL factorial(6)
+
+    TREE_INSTR: CALL printInt(z)
+    TREE_INSTR: CALL printLn()
+}
+END_PROC
+
+** Executing test05.class **
+Results should be : 6 720
+6 720

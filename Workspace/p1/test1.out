@@ -1,0 +1,20 @@
+1: 
+2: //------ test legal statements -------
+3: 
+4: int i;
+5: int i1;
+6: 
+7: void
+8: grammarTest() {
+9: 
+10:   // test declarations
+11:   int a,b,c;
+12:   int x,y,z;
+13: 
+14:   // test arithmetic expressions
+15:   a = 1+2*b;
+16:   c = b/(4-5);
+17:   x = -1-a;
+18:   y = -x+y-z;
+19: }
+20: 

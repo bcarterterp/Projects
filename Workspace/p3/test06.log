@@ -1,0 +1,87 @@
+136: // test arrays
+137: int a[5];
+138: 
+139: int foo ( int param )
+140: {
+141:    int b[10];
+142:    int i;
+143:    i = 1;
+144:    while (i < 10) {
+145:       b[i] = i;
+146:       i = i+1;
+147:    }
+148:    b[0] = b[param-1] + b[param+1];
+149:    return b[0]; 
+150: }
+151:  
+152: void main ( ) 
+153: {
+154:    int c;
+155:    printStr("Result should be: 8 10");
+156:    printLn();
+157: 
+158:    c = a[0];
+159:    a[1] = 4;
+160:    a[2] = 5;
+161:    a[0] = foo( a[1] );
+162:    printInt(a[0]);
+163:    printStr(" ");
+164:    a[0] = foo( a[2] );
+165:    printInt(a[0]);
+166:    printLn();
+167: }
+168: 
+** Global Variables **
+a, int, array
+foo, int, function, param = int
+main, void, function, param = <void>
+printInt, void, function, param = int
+printLn, void, function, param = <void>
+printStr, void, function, param = String
+** Local Variables in foo() **
+param, int
+{
+b, int, array
+i, int
+{
+}
+}
+** Local Variables in main() **
+{
+c, int
+}
+TREE_PROC: foo
+{
+    TREE_INSTR: i = 1
+  TREE_WHILE: CONDITION: (i LESS 10)
+{
+    TREE_INSTR: b[i] = i
+    TREE_INSTR: i = (i PLUS 1)
+}
+  END_WHILE 
+    TREE_INSTR: b[0] = (b[(param MINUS 1)] PLUS b[(param PLUS 1)])
+    TREE_INSTR:  RETURN b[0]
+}
+END_PROC
+
+TREE_PROC: main
+{
+    TREE_INSTR: CALL printStr("Result should be: 8 10")
+    TREE_INSTR: CALL printLn()
+    TREE_INSTR: c = a[0]
+    TREE_INSTR: a[1] = 4
+    TREE_INSTR: a[2] = 5
+    TREE_INSTR: a[0] = CALL foo(a[1])
+
+    TREE_INSTR: CALL printInt(a[0])
+    TREE_INSTR: CALL printStr(" ")
+    TREE_INSTR: a[0] = CALL foo(a[2])
+
+    TREE_INSTR: CALL printInt(a[0])
+    TREE_INSTR: CALL printLn()
+}
+END_PROC
+
+** Executing test06.class **
+Result should be: 8 10
+8 10

@@ -1,0 +1,97 @@
+1: //--------- test arithmetic expressions ---------
+2: int a, b;
+3: void c ( int d )
+4: {
+5:     int e, f;
+6:     if (1 == 2) {
+7:         int g,h;
+8:         a = b + d + e + f + g + h;
+9:     } 
+10:     else {
+11:         int i,j,b;  
+12:         a = b - d - e - f - i - j;
+13:     }
+14:     a = b + d - e * f - e + d / b + a * a - b * d * e;
+15:     a = a+a+a-a-a*a*a*a/a/a-a+a*a/a*a;
+16: }
+17: 
+18: int k ( )
+19: {
+20:     int l,m;
+21:     if (1 == 2) {
+22:         int n,o;
+23:         a = b * l * m * n * o;
+24:     } 
+25:     else {
+26:         int p,q;  
+27:         a = b / l / m / p / q;
+28:     }
+29:     return (b + a * l - (m / b * m * b + a) + b * m - a);
+30: }
+** Global Variables **
+a, int
+b, int
+c, void, function, param = int
+k, int, function, param = <void>
+printInt, void, function, param = int
+printLn, void, function, param = <void>
+printStr, void, function, param = String
+** Local Variables in c() **
+d, int
+{
+e, int
+f, int
+{
+g, int
+h, int
+}
+{
+b, int
+i, int
+j, int
+}
+}
+** Local Variables in k() **
+{
+l, int
+m, int
+{
+n, int
+o, int
+}
+{
+p, int
+q, int
+}
+}
+TREE_PROC: c
+{
+  TREE_IF: CONDITION: (1 EQ_OP 2)
+{
+    TREE_INSTR: a = (((((b PLUS d) PLUS e) PLUS f) PLUS g) PLUS h)
+}
+  ELSE: 
+{
+    TREE_INSTR: a = (((((b MINUS d) MINUS e) MINUS f) MINUS i) MINUS j)
+}
+  END_IF 
+    TREE_INSTR: a = ((((((b PLUS d) MINUS (e MUL f)) MINUS e) PLUS (d DIV b)) PLUS (a MUL a)) MINUS ((b MUL d) MUL e))
+    TREE_INSTR: a = ((((((a PLUS a) PLUS a) MINUS a) MINUS (((((a MUL a) MUL a) MUL a) DIV a) DIV a)) MINUS a) PLUS (((a MUL a) DIV a) MUL a))
+}
+END_PROC
+
+TREE_PROC: k
+{
+  TREE_IF: CONDITION: (1 EQ_OP 2)
+{
+    TREE_INSTR: a = ((((b MUL l) MUL m) MUL n) MUL o)
+}
+  ELSE: 
+{
+    TREE_INSTR: a = ((((b DIV l) DIV m) DIV p) DIV q)
+}
+  END_IF 
+    TREE_INSTR:  RETURN ((((b PLUS (a MUL l)) MINUS ((((m DIV b) MUL m) MUL b) PLUS a)) PLUS (b MUL m)) MINUS a)
+}
+END_PROC
+

@@ -1,0 +1,67 @@
+Compiled from "<generated>"
+public class test02 extends java.lang.Object{
+public static int x;
+
+public static int y;
+
+public static void main(java.lang.String[]);
+  Code:
+   0:	iconst_1
+   1:	putstatic	#33; //Field x:I
+   4:	iconst_2
+   5:	getstatic	#33; //Field x:I
+   8:	iadd
+   9:	istore_1
+   10:	iconst_1
+   11:	ineg
+   12:	iload_1
+   13:	getstatic	#33; //Field x:I
+   16:	imul
+   17:	iadd
+   18:	putstatic	#36; //Field y:I
+   21:	iconst_3
+   22:	getstatic	#36; //Field y:I
+   25:	imul
+   26:	getstatic	#33; //Field x:I
+   29:	iload_1
+   30:	isub
+   31:	isub
+   32:	istore_2
+   33:	getstatic	#12; //Field java/lang/System.out:Ljava/io/PrintStream;
+   36:	ldc	#38; //String Results should be: 1 3 2 8
+   38:	invokevirtual	#29; //Method java/io/PrintStream.print:(Ljava/lang/String;)V
+   41:	getstatic	#12; //Field java/lang/System.out:Ljava/io/PrintStream;
+   44:	invokevirtual	#26; //Method java/io/PrintStream.println:()V
+   47:	getstatic	#12; //Field java/lang/System.out:Ljava/io/PrintStream;
+   50:	getstatic	#33; //Field x:I
+   53:	invokevirtual	#22; //Method java/io/PrintStream.print:(I)V
+   56:	getstatic	#12; //Field java/lang/System.out:Ljava/io/PrintStream;
+   59:	ldc	#40; //String  
+   61:	invokevirtual	#29; //Method java/io/PrintStream.print:(Ljava/lang/String;)V
+   64:	getstatic	#12; //Field java/lang/System.out:Ljava/io/PrintStream;
+   67:	iload_1
+   68:	invokevirtual	#22; //Method java/io/PrintStream.print:(I)V
+   71:	getstatic	#12; //Field java/lang/System.out:Ljava/io/PrintStream;
+   74:	ldc	#40; //String  
+   76:	invokevirtual	#29; //Method java/io/PrintStream.print:(Ljava/lang/String;)V
+   79:	getstatic	#12; //Field java/lang/System.out:Ljava/io/PrintStream;
+   82:	getstatic	#36; //Field y:I
+   85:	invokevirtual	#22; //Method java/io/PrintStream.print:(I)V
+   88:	getstatic	#12; //Field java/lang/System.out:Ljava/io/PrintStream;
+   91:	ldc	#40; //String  
+   93:	invokevirtual	#29; //Method java/io/PrintStream.print:(Ljava/lang/String;)V
+   96:	getstatic	#12; //Field java/lang/System.out:Ljava/io/PrintStream;
+   99:	iload_2
+   100:	invokevirtual	#22; //Method java/io/PrintStream.print:(I)V
+   103:	getstatic	#12; //Field java/lang/System.out:Ljava/io/PrintStream;
+   106:	invokevirtual	#26; //Method java/io/PrintStream.println:()V
+   109:	return
+
+public test02();
+  Code:
+   0:	aload_0
+   1:	invokespecial	#49; //Method java/lang/Object."<init>":()V
+   4:	return
+
+}
+

@@ -1,0 +1,99 @@
+253: //------ test relational & logical expression errors  -------
+254: 
+255: void
+256: main() {
+257:   int x,y,z;
+258: 
+259:   // test control flow
+ERROR(260) requires boolean
+260:   if (x - 1)        // requires boolean
+261:     { z = 1; }
+262:   else
+263:     { z = 2; }
+264: 
+265:   while (x < 6) 
+266:     { x = x + 1; }
+267: 
+268:   // test relational & logical expressions
+269: 
+ERROR(270) requires boolean
+270:   if ( (x == y) && (1 * z) )  // requires boolean
+271:     { z = 5; }
+272: 
+ERROR(273) requires boolean
+273:   if ( (x == y) == 1 )  // requires boolean
+274:     { z = 5; }
+275: 
+ERROR(276) requires integer
+276:   if ( 1 != (x < 4) )  // requires integer
+277:     { z = 5; }
+278: 
+279:   if ( !(x != z) ) 
+ERROR(280) requires integer
+280:     { y = y > x; }    // requires integer
+281: }
+282: 
+** Global Variables **
+main, void, function, param = <void>
+printInt, void, function, param = int
+printLn, void, function, param = <void>
+printStr, void, function, param = String
+** Local Variables in main() **
+{
+x, int
+y, int
+z, int
+{
+}
+{
+}
+{
+}
+{
+}
+{
+}
+{
+}
+{
+}
+}
+TREE_PROC: main
+{
+  TREE_IF: CONDITION: (x MINUS 1)
+{
+    TREE_INSTR: z = 1
+}
+  ELSE: 
+{
+    TREE_INSTR: z = 2
+}
+  END_IF 
+  TREE_WHILE: CONDITION: (x LESS 6)
+{
+    TREE_INSTR: x = (x PLUS 1)
+}
+  END_WHILE 
+  TREE_IF: CONDITION: ((x EQ_OP y) AND_OP (1 MUL z))
+{
+    TREE_INSTR: z = 5
+}
+  END_IF 
+  TREE_IF: CONDITION: ((x EQ_OP y) EQ_OP 1)
+{
+    TREE_INSTR: z = 5
+}
+  END_IF 
+  TREE_IF: CONDITION: (1 NE_OP (x LESS 4))
+{
+    TREE_INSTR: z = 5
+}
+  END_IF 
+  TREE_IF: CONDITION: ( NOT_OP (x NE_OP z))
+{
+    TREE_INSTR: y = (y GR x)
+}
+  END_IF 
+}
+END_PROC
+

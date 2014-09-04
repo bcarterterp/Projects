@@ -1,0 +1,402 @@
+package com.carter.scramblestories;
+
+import java.util.ArrayList;
+
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+public class PassAndPlay extends Activity{
+	
+	Player players[];
+	LetterBag bag = new LetterBag();
+	LinearLayout layout;
+	TextView textview,word_type,score_view;
+	Button tiles[], repick;
+	String user_word;
+	WordCheck checker = new WordCheck();
+	int curr_type, word_score,wild_one_index[],wild_two_index[],repicked_times,people,curr_player,player_word_score[][];
+	String type[],words_to_swap[],old_words[],player_word[][];
+	StoryParser story;
+	boolean wild_one[],wild_two[],repicked;
+	String names[] = {"Brandon","Computer"};
+	Intent done;
+	
+	String update_output = "";
+	
+	public void onCreate(Bundle savedInstanceState){
+		
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_home);
+		
+		layout = (LinearLayout) findViewById(R.id.linlayout);
+		textview = (TextView) findViewById(R.id.textView1);
+		word_type = (TextView) findViewById(R.id.wordType);
+		score_view = (TextView) findViewById(R.id.score);
+		repick = (Button) findViewById(R.id.rePick);
+		done = new Intent(this, EndGame.class);
+		tiles = new Button[7];
+		story = new StoryParser("tester");
+		story.chooseWords(5);
+		type = story.getWordTypes();
+		old_words = story.getWords();
+		words_to_swap = new String[type.length];
+		repick.setOnClickListener(null);
+		people = 2;
+		setup();
+
+	}
+	
+	public void setup(){
+		
+		players = new Player[people];
+		wild_one = new boolean[people];
+		wild_two = new boolean[people];
+		wild_one_index = new int[people];
+		wild_two_index = new int[people];
+		repicked = false;
+		repicked_times = 0;
+		player_word = new String[people][type.length];
+		player_word_score = new int[people][type.length];
+		curr_player = 0;
+		
+		update_output = "Done!";
+		textview.setText(update_output);
+		
+		for(int i = 0;i<people;i++){
+			
+			players[i] = new Player(names[i],bag);
+			wild_one[i] = false;
+			wild_two[i] = false;
+			update_output = update_output+players[i].getHand()+"\n";
+			
+		}
+		
+		user_word = "";
+		for(int i=0;i<7;i++){
+			tiles[i] = new Button(this);
+			if(players[curr_player].getTile(i) == ' '){
+				tiles[i].setOnClickListener(clickedBlank(i));
+			}else{
+				tiles[i].setOnClickListener(clickedTile(i));
+			}
+			layout.addView(tiles[i]);
+			String tile_name = getTileString(players[curr_player].getTile(i));
+			int imageResource = getResources().getIdentifier(tile_name, "drawable", getPackageName());
+			tiles[i].setBackgroundResource(imageResource);
+		}
+		
+		word_type.setText(type[curr_type]);
+		word_score = 0;
+		score_view.setText(Integer.toString(word_score));
+		textview.setText(update_output);
+		
+	}
+	
+	public void showTiles(){
+		for(int i=0;i<7;i++){
+			if(players[curr_player].getTile(i) == ' '){
+				tiles[i].setOnClickListener(clickedBlank(i));
+			}else{
+				tiles[i].setOnClickListener(clickedTile(i));
+			}
+			String tile_name = getTileString(players[curr_player].getTile(i));
+			int imageResource = getResources().getIdentifier(tile_name, "drawable", getPackageName());
+			tiles[i].setBackgroundResource(imageResource);
+		}
+	}
+	
+	public void createWord(View v){
+		if(user_word.equalsIgnoreCase("")){
+			textview.setText("NO WORD MADE!!!");
+		}else if(checker.checkWord(type[curr_type], user_word)){
+			textview.setText("IT'S A WORD!!!");
+			players[curr_player].setScore(players[curr_player].score()+word_score);
+			player_word_score[curr_player][curr_type] = word_score;
+			word_score = 0;
+			score_view.setText(user_word+" played! Score: "+players[curr_player].score());
+			player_word[curr_player][curr_type] = user_word;
+			changeTiles(user_word.toUpperCase());
+			user_word = "";
+			repicked = false;
+			repicked_times = 0;
+			if(curr_player == people-1){
+				curr_player = 0;
+				curr_type++;
+			}else{
+				curr_player++;
+			}
+			textview.setText(Integer.toString(curr_player));
+			if(curr_type<type.length){
+				word_type.setText(type[curr_type]);
+			}else{
+				//story.swapIntoStory(words_to_swap, story.getWords());
+				textview.setText(story.getStoryString());
+				score_view.setText(Integer.toString(players[curr_player].score()));
+				done.putExtra("story", story.getStoryString());
+				done.putExtra("score",players[curr_player].score());
+				startActivity(done);
+			}
+		}else{
+			textview.setText("TRY AGAIN!");
+			user_word = "";
+			word_score = 0;
+			score_view.setText("0");
+		}
+		
+	}
+	
+	public void changeTiles(String word){
+		
+		if(wild_one[curr_player]){
+			players[curr_player].setTile(wild_one_index[curr_player], '[');
+		}
+		if(wild_two[curr_player]){
+			players[curr_player].setTile(wild_two_index[curr_player], '[');
+		}
+		
+		for(int i = 0;i<players[curr_player].getHand().length();i++){
+			
+			if(word.indexOf(players[curr_player].getTile(i)) >= 0){
+				players[curr_player].playTile(i);
+			}
+			
+		}
+		
+		if(wild_one[curr_player]){
+			players[curr_player].playTile(wild_one_index[curr_player]);
+			wild_one[curr_player] = false;
+		}
+		if(wild_one[curr_player]){
+			players[curr_player].playTile(wild_two_index[curr_player]);
+			wild_two[curr_player] = false;
+		}
+		showTiles();
+	}
+	
+	public void clearWord(View view){
+		word_score = 0;
+		if(wild_one[curr_player]){
+			wild_one[curr_player] = false;
+			players[curr_player].setTile(wild_one_index[curr_player], '[');
+			String tile_name = getTileString(players[curr_player].getTile(wild_one_index[curr_player]));
+			int imageResource = getResources().getIdentifier(tile_name, "drawable", getPackageName());
+			tiles[wild_one_index[curr_player]].setBackgroundResource(imageResource);
+			tiles[wild_one_index[curr_player]].setOnClickListener(clickedBlank(wild_one_index[curr_player]));
+		}
+		if(wild_two[curr_player]){
+			wild_two[curr_player] = false;
+			players[curr_player].setTile(wild_one_index[curr_player], '[');
+			String tile_name = getTileString(players[curr_player].getTile(wild_two_index[curr_player]));
+			int imageResource = getResources().getIdentifier(tile_name, "drawable", getPackageName());
+			tiles[wild_two_index[curr_player]].setBackgroundResource(imageResource);
+			tiles[wild_two_index[curr_player]].setOnClickListener(clickedBlank(wild_two_index[curr_player]));
+		}
+		user_word = "";
+		score_view.setText(Integer.toString(word_score));
+		textview.setText(null);
+	}
+	
+	public void removeLast(View v){
+		
+		if (!user_word.equalsIgnoreCase("")){
+			
+			word_score = word_score-bag.getPoints(Character.toUpperCase(user_word.charAt(user_word.length()-1)));
+			user_word = user_word.substring(0, user_word.length()-1);
+			textview.setText(user_word);
+			score_view.setText(Integer.toString(word_score));
+			
+		}
+		
+	}
+	
+	private View.OnClickListener clickedTile(final int index){
+
+		return new View.OnClickListener() {
+
+			public void onClick(View v) {
+				
+				user_word = user_word + players[curr_player].getTile(index);
+				user_word = user_word.toLowerCase();
+				textview.setText(user_word);
+				word_score += bag.getPoints(players[curr_player].getTile(index));
+				score_view.setText(Integer.toString(word_score));
+				
+			}
+			
+		
+		};
+		
+	}
+	
+	private View.OnClickListener clickedBlank(final int index){
+		
+		return new View.OnClickListener() {
+			AlertDialog tileDialog;
+			@Override
+			public void onClick(View arg0) {
+				
+				AlertDialog.Builder builder = new AlertDialog.Builder(arg0.getContext());
+				builder.setTitle(R.string.choose_tile);
+				builder.setSingleChoiceItems(bag.getAlphabet(), -1, new DialogInterface.OnClickListener() {
+					
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+
+						tileDialog.dismiss();
+						changeWildTile(index, which+65);
+						
+					}
+				});
+				
+				tileDialog = builder.create();
+				tileDialog.show();
+			}
+			
+		};
+		
+	}
+	
+	private void changeWildTile(int index, int letter){
+		
+		if(!wild_one[curr_player]){
+			
+			wild_one[curr_player] = true;
+			wild_one_index[curr_player]= index;
+			
+		}else{
+			
+			wild_two[curr_player] = true;
+			wild_two_index[curr_player] = index;
+			
+		}
+		
+		char tile = (char) letter;
+		
+		tiles[index].setOnClickListener(clickedTile(index));
+		players[curr_player].setTile(index, tile);
+		int imageResource = getResources().getIdentifier(getTileString(tile), "drawable", getPackageName());
+		tiles[index].setBackgroundResource(imageResource);
+		
+	}
+	
+	private String getTileString(char letter){
+		
+		if(letter == ' '){
+			return "tile_blank";
+		}else{
+			return "tile_"+Character.toLowerCase(letter);
+		}
+		
+	}
+	
+public View.OnClickListener repick(){
+		
+		return new View.OnClickListener() {
+
+			public void onClick(final View v) {
+				
+				final ArrayList<Integer> tile_index = new ArrayList<Integer>();
+
+				AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+				builder.setTitle("Select Tiles to Replace ("+(repicked_times+1)+"/3)");
+				builder.setMultiChoiceItems(players[curr_player].handArray(), null, new DialogInterface.OnMultiChoiceClickListener(){
+					public void onClick(DialogInterface dialog, int which,boolean isChecked){
+						
+						if(isChecked){
+							tile_index.add(which);
+						}else if(tile_index.contains(which)){
+							tile_index.remove(Integer.valueOf(which));
+						}
+						
+					}
+				});
+				builder.setPositiveButton("Done", new DialogInterface.OnClickListener() {
+					
+					@Override
+					public void onClick(DialogInterface dialog, int whichButton) {
+						
+						dialog.dismiss();
+						clearWord(v);
+						replaceTiles(tile_index);
+						repicked = true;
+						repicked_times++;
+						if(repicked_times == 1){
+							repick.setText("Pass");
+							repick.setOnClickListener(pass());
+						}
+						
+					}
+				});
+				
+				AlertDialog replaceDialog = builder.create();
+				replaceDialog.show();
+				
+			}
+		};
+	}
+
+	private void replaceTiles(ArrayList<Integer> list){
+		for(Integer x:list){
+			char tile_letter = players[curr_player].replaceTile(x);
+			String tile_name = getTileString(tile_letter);
+			int imageResource = getResources().getIdentifier(tile_name, "drawable", getPackageName());
+			tiles[x].setBackgroundResource(imageResource);
+			if(players[curr_player].getTile(x) == ' '){
+				tiles[x].setOnClickListener(clickedBlank(x));
+			}else{
+				tiles[x].setOnClickListener(clickedTile(x));
+			}
+		
+		}
+	
+	}
+	
+	public View.OnClickListener pass(){
+		
+		return new View.OnClickListener() {
+			
+			public void onClick(View v) {
+				
+				user_word = old_words[curr_type];
+				word_score = 0;
+				score_view.setText("Score: "+players[curr_player].score());
+				player_word[curr_player][curr_type] = user_word;
+				player_word_score[curr_player][curr_type] = 0;
+				user_word = "";
+				curr_type++;
+				//showTiles();
+				if(curr_player == people-1){
+					curr_player = 0;
+					curr_type++;
+				}else{
+					curr_player++;
+				}
+				if(curr_type<type.length){
+					word_type.setText(type[curr_type]);
+				}else{
+					story.swapIntoStory(words_to_swap, story.getWords());
+					textview.setText(story.getStoryString());
+					score_view.setText(Integer.toString(players[curr_player].score()));
+					done.putExtra("story", story.getStoryString());
+					done.putExtra("score",players[curr_player].score());
+					startActivity(done);
+				}
+				
+				repick.setText("Repick");
+				repicked = false;
+				repicked_times = 0;
+				repick.setOnClickListener(repick());
+				
+			}
+		};
+	
+	}
+
+}

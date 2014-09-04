@@ -1,0 +1,102 @@
+169: // test control flow with IF and WHILE statements
+170: 
+171: void main ( )
+172: {
+173:    int i,n,x,y,z;
+174: 
+175:    n = 10;
+176:    i = 1;
+177: 
+178:    printStr("Sum of odd numbers should be: 1 4 9 16 25 36 49 64 81");
+179:    printLn();
+180: 
+181:    while ( i < n )
+182:    {
+183:       x = 1; 
+184:       y = 0; 
+185:       while ( x < (2*i) )
+186:       {
+187:           z = (x / 2);
+188:           z = x - (2 * z);
+189:           if ( z != 0 )
+190:           {
+191:               y = y + x;
+192:           }
+193:           x = x + 1;
+194:       }
+195:    
+196:       printStr("Sum of odd numbers from 1 to ");
+197:       z = x-1;
+198:       printInt(z);
+199:       printStr(" is ");
+200:       printInt(y);
+201:       printLn();
+202:       i = i + 1;
+203:    }
+204: }
+205: 
+206: 
+** Global Variables **
+main, void, function, param = <void>
+printInt, void, function, param = int
+printLn, void, function, param = <void>
+printStr, void, function, param = String
+** Local Variables in main() **
+{
+i, int
+n, int
+x, int
+y, int
+z, int
+{
+{
+{
+}
+}
+}
+}
+TREE_PROC: main
+{
+    TREE_INSTR: n = 10
+    TREE_INSTR: i = 1
+    TREE_INSTR: CALL printStr("Sum of odd numbers should be: 1 4 9 16 25 36 49 64 81")
+    TREE_INSTR: CALL printLn()
+  TREE_WHILE: CONDITION: (i LESS n)
+{
+    TREE_INSTR: x = 1
+    TREE_INSTR: y = 0
+  TREE_WHILE: CONDITION: (x LESS (2 MUL i))
+{
+    TREE_INSTR: z = (x DIV 2)
+    TREE_INSTR: z = (x MINUS (2 MUL z))
+  TREE_IF: CONDITION: (z NE_OP 0)
+{
+    TREE_INSTR: y = (y PLUS x)
+}
+  END_IF 
+    TREE_INSTR: x = (x PLUS 1)
+}
+  END_WHILE 
+    TREE_INSTR: CALL printStr("Sum of odd numbers from 1 to ")
+    TREE_INSTR: z = (x MINUS 1)
+    TREE_INSTR: CALL printInt(z)
+    TREE_INSTR: CALL printStr(" is ")
+    TREE_INSTR: CALL printInt(y)
+    TREE_INSTR: CALL printLn()
+    TREE_INSTR: i = (i PLUS 1)
+}
+  END_WHILE 
+}
+END_PROC
+
+** Executing test07.class **
+Sum of odd numbers should be: 1 4 9 16 25 36 49 64 81
+Sum of odd numbers from 1 to 1 is 1
+Sum of odd numbers from 1 to 3 is 4
+Sum of odd numbers from 1 to 5 is 9
+Sum of odd numbers from 1 to 7 is 16
+Sum of odd numbers from 1 to 9 is 25
+Sum of odd numbers from 1 to 11 is 36
+Sum of odd numbers from 1 to 13 is 49
+Sum of odd numbers from 1 to 15 is 64
+Sum of odd numbers from 1 to 17 is 81

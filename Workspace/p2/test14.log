@@ -1,0 +1,43 @@
+309: //------ test array type errors  -------
+310: 
+311: int a[4];
+312: 
+313: void
+314: grammarTest() {
+315:   int b,c,d[2];
+316: 
+317:   // test arrays
+ERROR(318) misuse of b
+318:   c = b[3];		// misuse of b
+ERROR(319) misuse of b
+319:   b[1] = 2;		// misuse of b
+ERROR(320) illegal subscript
+320:   b = 2*a[1 < b];	// illegal subscript
+ERROR(321) misuse of a
+321:   c = a;		// misuse of a
+ERROR(322) misuse of d
+322:   b = d(1);		// misuse of d
+323: }
+324: 
+** Global Variables **
+a, int, array
+grammarTest, void, function, param = <void>
+printInt, void, function, param = int
+printLn, void, function, param = <void>
+printStr, void, function, param = String
+** Local Variables in grammarTest() **
+{
+b, int
+c, int
+d, int, array
+}
+TREE_PROC: grammarTest
+{
+    TREE_INSTR: c = b
+    TREE_INSTR: b = 2
+    TREE_INSTR: b = (2 MUL a)
+    TREE_INSTR: c = a
+    TREE_INSTR: b = d
+}
+END_PROC
+

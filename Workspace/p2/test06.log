@@ -1,0 +1,87 @@
+175: //--------- test forward declarations ---------
+176: 
+177: int x;
+178: int f1 ( );
+179: int f2 ( int p1 );
+180: void f3 ( int p2 );
+181: void f4 ( );
+182: 
+183: int f1 ( )             // match
+184: {
+185:     int x1; 
+186:     x1 = 1; 
+187:     return x1;
+188: } 
+189: 
+190: int f2 ( int p3 )     // match
+191: { 
+192:     int x2; 
+193:     x2 = 2; 
+194:     return x2;
+195: } 
+196: 
+197: void f3 ( int p4 )     // match
+198: { 
+199:     int x3; 
+200:     x3 = 3; 
+201: } 
+202: 
+203: void f4 ( )      // match
+204: { 
+205:     int x4; 
+206:     x4 = 4; 
+207: } 
+208: 
+** Global Variables **
+f1, int, function, param = <void>
+f2, int, function, param = int
+f3, void, function, param = int
+f4, void, function, param = <void>
+printInt, void, function, param = int
+printLn, void, function, param = <void>
+printStr, void, function, param = String
+x, int
+** Local Variables in f1() **
+{
+x1, int
+}
+** Local Variables in f2() **
+p3, int
+{
+x2, int
+}
+** Local Variables in f3() **
+p4, int
+{
+x3, int
+}
+** Local Variables in f4() **
+{
+x4, int
+}
+TREE_PROC: f1
+{
+    TREE_INSTR: x1 = 1
+    TREE_INSTR:  RETURN x1
+}
+END_PROC
+
+TREE_PROC: f2
+{
+    TREE_INSTR: x2 = 2
+    TREE_INSTR:  RETURN x2
+}
+END_PROC
+
+TREE_PROC: f3
+{
+    TREE_INSTR: x3 = 3
+}
+END_PROC
+
+TREE_PROC: f4
+{
+    TREE_INSTR: x4 = 4
+}
+END_PROC
+

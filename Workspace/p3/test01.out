@@ -1,0 +1,54 @@
+1: // test basic variable assignments
+2: int x,y;
+3: void main ( )
+4: {
+5:    int a,b;
+6:    x = 1;
+7:    a = 2;
+8:    y = a;
+9:    b = x;
+10:    printStr("Results should be: 1 2 2 1"); 
+11:    printLn();
+12:    printInt(x); 
+13:    printStr(" ");
+14:    printInt(y); 
+15:    printStr(" ");
+16:    printInt(a); 
+17:    printStr(" ");
+18:    printInt(b); 
+19:    printLn();
+20: }
+** Global Variables **
+main, void, function, param = <void>
+printInt, void, function, param = int
+printLn, void, function, param = <void>
+printStr, void, function, param = String
+x, int
+y, int
+** Local Variables in main() **
+{
+a, int
+b, int
+}
+TREE_PROC: main
+{
+    TREE_INSTR: x = 1
+    TREE_INSTR: a = 2
+    TREE_INSTR: y = a
+    TREE_INSTR: b = x
+    TREE_INSTR: CALL printStr("Results should be: 1 2 2 1")
+    TREE_INSTR: CALL printLn()
+    TREE_INSTR: CALL printInt(x)
+    TREE_INSTR: CALL printStr(" ")
+    TREE_INSTR: CALL printInt(y)
+    TREE_INSTR: CALL printStr(" ")
+    TREE_INSTR: CALL printInt(a)
+    TREE_INSTR: CALL printStr(" ")
+    TREE_INSTR: CALL printInt(b)
+    TREE_INSTR: CALL printLn()
+}
+END_PROC
+
+** Executing test01.class **
+Results should be: 1 2 2 1
+1 2 2 1

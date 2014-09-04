@@ -1,0 +1,103 @@
+Compiled from "<generated>"
+public class test07 extends java.lang.Object{
+public static void main(java.lang.String[]);
+  Code:
+   0:	bipush	10
+   2:	istore_2
+   3:	iconst_1
+   4:	istore_1
+   5:	getstatic	#12; //Field java/lang/System.out:Ljava/io/PrintStream;
+   8:	ldc	#31; //String Sum of odd numbers should be: 1 4 9 16 25 36 49 64 81
+   10:	invokevirtual	#29; //Method java/io/PrintStream.print:(Ljava/lang/String;)V
+   13:	getstatic	#12; //Field java/lang/System.out:Ljava/io/PrintStream;
+   16:	invokevirtual	#26; //Method java/io/PrintStream.println:()V
+   19:	nop
+   20:	iload_1
+   21:	iload_2
+   22:	if_icmplt	29
+   25:	iconst_0
+   26:	goto	31
+   29:	nop
+   30:	iconst_1
+   31:	nop
+   32:	ifeq	152
+   35:	iconst_1
+   36:	istore_3
+   37:	iconst_0
+   38:	istore	4
+   40:	nop
+   41:	iload_3
+   42:	iconst_2
+   43:	iload_1
+   44:	imul
+   45:	if_icmplt	52
+   48:	iconst_0
+   49:	goto	54
+   52:	nop
+   53:	iconst_1
+   54:	nop
+   55:	ifeq	101
+   58:	iload_3
+   59:	iconst_2
+   60:	idiv
+   61:	istore	5
+   63:	iload_3
+   64:	iconst_2
+   65:	iload	5
+   67:	imul
+   68:	isub
+   69:	istore	5
+   71:	iload	5
+   73:	iconst_0
+   74:	if_icmpne	81
+   77:	iconst_0
+   78:	goto	83
+   81:	nop
+   82:	iconst_1
+   83:	nop
+   84:	ifeq	93
+   87:	iload	4
+   89:	iload_3
+   90:	iadd
+   91:	istore	4
+   93:	nop
+   94:	iload_3
+   95:	iconst_1
+   96:	iadd
+   97:	istore_3
+   98:	goto	40
+   101:	nop
+   102:	getstatic	#12; //Field java/lang/System.out:Ljava/io/PrintStream;
+   105:	ldc	#33; //String Sum of odd numbers from 1 to 
+   107:	invokevirtual	#29; //Method java/io/PrintStream.print:(Ljava/lang/String;)V
+   110:	iload_3
+   111:	iconst_1
+   112:	isub
+   113:	istore	5
+   115:	getstatic	#12; //Field java/lang/System.out:Ljava/io/PrintStream;
+   118:	iload	5
+   120:	invokevirtual	#22; //Method java/io/PrintStream.print:(I)V
+   123:	getstatic	#12; //Field java/lang/System.out:Ljava/io/PrintStream;
+   126:	ldc	#35; //String  is 
+   128:	invokevirtual	#29; //Method java/io/PrintStream.print:(Ljava/lang/String;)V
+   131:	getstatic	#12; //Field java/lang/System.out:Ljava/io/PrintStream;
+   134:	iload	4
+   136:	invokevirtual	#22; //Method java/io/PrintStream.print:(I)V
+   139:	getstatic	#12; //Field java/lang/System.out:Ljava/io/PrintStream;
+   142:	invokevirtual	#26; //Method java/io/PrintStream.println:()V
+   145:	iload_1
+   146:	iconst_1
+   147:	iadd
+   148:	istore_1
+   149:	goto	19
+   152:	nop
+   153:	return
+
+public test07();
+  Code:
+   0:	aload_0
+   1:	invokespecial	#48; //Method java/lang/Object."<init>":()V
+   4:	return
+
+}
+

@@ -1,0 +1,96 @@
+355: //--------- test forward declaration type errors ---------
+356: int x;
+357: int f1 ( );
+358: int f2 ( int p1 );
+359: void f3 ( int p2 );
+360: void f4 ( );
+361: 
+362: int f1 ( int z )             // forward decl mismatch f1
+ERROR(363) forward decl mismatch f1
+363: {
+364:     int x1; 
+365:     x1 = 1; 
+366:     return x1;
+367: } 
+368: 
+369: void f2 ( int z )     //  forward decl mismatch f2
+ERROR(370) forward decl mismatch f2
+370: { 
+371:     int x2; 
+372:     x2 = 2; 
+373:     return x2;		// return mismatch
+ERROR(374) return mismatch
+374: } 
+375: 
+376: int f3 ( int p4 )       //  forward decl mismatch f3
+ERROR(377) forward decl mismatch f3
+377: { 
+378:     int x3; 
+379:     x3 = 3; 
+380:     return x3;
+381: } 
+382: 
+383: int f4 ( )      // forward decl mismatch f4
+ERROR(384) forward decl mismatch f4
+384: { 
+385:     int x4; 
+386:     x4 = 4; 
+387:     return;  	// return mismatch
+ERROR(388) return mismatch
+388: } 
+** Global Variables **
+f1, int, function, param = int
+f2, int, function, param = int
+f3, void, function, param = int
+f4, void, function, param = <void>
+printInt, void, function, param = int
+printLn, void, function, param = <void>
+printStr, void, function, param = String
+x, int
+** Local Variables in f1() **
+z, int
+{
+x1, int
+}
+** Local Variables in f2() **
+z, int
+{
+x2, int
+}
+** Local Variables in f3() **
+p4, int
+{
+x3, int
+}
+** Local Variables in f4() **
+{
+x4, int
+}
+TREE_PROC: f1
+{
+    TREE_INSTR: x1 = 1
+    TREE_INSTR:  RETURN x1
+}
+END_PROC
+
+TREE_PROC: f2
+{
+    TREE_INSTR: x2 = 2
+    TREE_INSTR:  RETURN x2
+}
+END_PROC
+
+TREE_PROC: f3
+{
+    TREE_INSTR: x3 = 3
+    TREE_INSTR:  RETURN x3
+}
+END_PROC
+
+TREE_PROC: f4
+{
+    TREE_INSTR: x4 = 4
+    TREE_INSTR:  RETURN 
+}
+END_PROC
+

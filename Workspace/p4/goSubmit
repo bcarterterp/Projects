@@ -1,0 +1,6 @@
+#!/bin/csh 
+if (! -e ClassFile.java) then
+	echo "ClassFile.java not in current directory"
+	exit
+endif
+java -jar submit.jar

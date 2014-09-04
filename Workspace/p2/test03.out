@@ -1,0 +1,89 @@
+1: //------ test functions & return statements -------
+2: int y;
+3: int f1()       
+4:   { return 1; }
+5: 
+6: void f2(int y) 
+7:   { y = 2; }
+8: 
+9: void f3() 
+10:   { y = 3; return; }
+11: 
+12: void
+13: main() {
+14:   int x,y,z;
+15: 
+16:   // test function calls
+17:   y = 0;
+18:   f1();
+19:   x = 2 + f1();
+20:   f2(x);
+21:   f3();
+22: 
+23:   printInt(x);
+24:   printStr(" ");
+25:   printInt(y);
+26:   printStr(" Done!");
+27:   printLn();
+28: }
+29: 
+** Global Variables **
+f1, int, function, param = <void>
+f2, void, function, param = int
+f3, void, function, param = <void>
+main, void, function, param = <void>
+printInt, void, function, param = int
+printLn, void, function, param = <void>
+printStr, void, function, param = String
+y, int
+** Local Variables in f1() **
+{
+}
+** Local Variables in f2() **
+y, int
+{
+}
+** Local Variables in f3() **
+{
+}
+** Local Variables in main() **
+{
+x, int
+y, int
+z, int
+}
+TREE_PROC: f1
+{
+    TREE_INSTR:  RETURN 1
+}
+END_PROC
+
+TREE_PROC: f2
+{
+    TREE_INSTR: y = 2
+}
+END_PROC
+
+TREE_PROC: f3
+{
+    TREE_INSTR: y = 3
+    TREE_INSTR:  RETURN 
+}
+END_PROC
+
+TREE_PROC: main
+{
+    TREE_INSTR: y = 0
+    TREE_INSTR: CALL f1()
+    TREE_INSTR: x = (2 PLUS CALL f1()
+)
+    TREE_INSTR: CALL f2(x)
+    TREE_INSTR: CALL f3()
+    TREE_INSTR: CALL printInt(x)
+    TREE_INSTR: CALL printStr(" ")
+    TREE_INSTR: CALL printInt(y)
+    TREE_INSTR: CALL printStr(" Done!")
+    TREE_INSTR: CALL printLn()
+}
+END_PROC
+

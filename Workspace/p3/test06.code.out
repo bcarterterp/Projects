@@ -1,0 +1,112 @@
+Compiled from "<generated>"
+public class test06 extends java.lang.Object{
+public static int[] a;
+
+public static int foo(int);
+  Code:
+   0:	bipush	10
+   2:	newarray int
+   4:	astore_1
+   5:	iconst_1
+   6:	istore_2
+   7:	nop
+   8:	iload_2
+   9:	bipush	10
+   11:	if_icmplt	18
+   14:	iconst_0
+   15:	goto	20
+   18:	nop
+   19:	iconst_1
+   20:	nop
+   21:	ifeq	35
+   24:	aload_1
+   25:	iload_2
+   26:	iload_2
+   27:	iastore
+   28:	iload_2
+   29:	iconst_1
+   30:	iadd
+   31:	istore_2
+   32:	goto	7
+   35:	nop
+   36:	aload_1
+   37:	iconst_0
+   38:	aload_1
+   39:	iload_0
+   40:	iconst_1
+   41:	isub
+   42:	iaload
+   43:	aload_1
+   44:	iload_0
+   45:	iconst_1
+   46:	iadd
+   47:	iaload
+   48:	iadd
+   49:	iastore
+   50:	aload_1
+   51:	iconst_0
+   52:	iaload
+   53:	ireturn
+   54:	return
+
+public static void main(java.lang.String[]);
+  Code:
+   0:	bipush	5
+   2:	newarray int
+   4:	putstatic	#16; //Field a:[I
+   7:	getstatic	#12; //Field java/lang/System.out:Ljava/io/PrintStream;
+   10:	ldc	#45; //String Result should be: 8 10
+   12:	invokevirtual	#37; //Method java/io/PrintStream.print:(Ljava/lang/String;)V
+   15:	getstatic	#12; //Field java/lang/System.out:Ljava/io/PrintStream;
+   18:	invokevirtual	#34; //Method java/io/PrintStream.println:()V
+   21:	getstatic	#16; //Field a:[I
+   24:	iconst_0
+   25:	iaload
+   26:	istore_1
+   27:	getstatic	#16; //Field a:[I
+   30:	iconst_1
+   31:	iconst_4
+   32:	iastore
+   33:	getstatic	#16; //Field a:[I
+   36:	iconst_2
+   37:	iconst_5
+   38:	iastore
+   39:	getstatic	#16; //Field a:[I
+   42:	iconst_0
+   43:	getstatic	#16; //Field a:[I
+   46:	iconst_1
+   47:	iaload
+   48:	invokestatic	#20; //Method foo:(I)I
+   51:	iastore
+   52:	getstatic	#12; //Field java/lang/System.out:Ljava/io/PrintStream;
+   55:	getstatic	#16; //Field a:[I
+   58:	iconst_0
+   59:	iaload
+   60:	invokevirtual	#30; //Method java/io/PrintStream.print:(I)V
+   63:	getstatic	#12; //Field java/lang/System.out:Ljava/io/PrintStream;
+   66:	ldc	#47; //String  
+   68:	invokevirtual	#37; //Method java/io/PrintStream.print:(Ljava/lang/String;)V
+   71:	getstatic	#16; //Field a:[I
+   74:	iconst_0
+   75:	getstatic	#16; //Field a:[I
+   78:	iconst_2
+   79:	iaload
+   80:	invokestatic	#20; //Method foo:(I)I
+   83:	iastore
+   84:	getstatic	#12; //Field java/lang/System.out:Ljava/io/PrintStream;
+   87:	getstatic	#16; //Field a:[I
+   90:	iconst_0
+   91:	iaload
+   92:	invokevirtual	#30; //Method java/io/PrintStream.print:(I)V
+   95:	getstatic	#12; //Field java/lang/System.out:Ljava/io/PrintStream;
+   98:	invokevirtual	#34; //Method java/io/PrintStream.println:()V
+   101:	return
+
+public test06();
+  Code:
+   0:	aload_0
+   1:	invokespecial	#53; //Method java/lang/Object."<init>":()V
+   4:	return
+
+}
+

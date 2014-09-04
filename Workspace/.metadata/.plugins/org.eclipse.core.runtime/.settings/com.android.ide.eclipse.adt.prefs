@@ -1,0 +1,8 @@
+com.android.ide.eclipse.adt.fixLegacyEditors=1
+com.android.ide.eclipse.adt.lintSeverities=MissingTranslation\=WARNING
+com.android.ide.eclipse.adt.sdk=/media/progterp/New Volume/Android/adt-bundle-linux-x86_64-20130917/sdk
+com.android.ide.eclipse.adt.xmlEditor=true
+design.palette.flyout.width=199
+design.structure.flyout.state=1
+design.structure.flyout.width=183
+eclipse.preferences.version=1

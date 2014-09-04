@@ -1,0 +1,32 @@
+
+public class DriverTester {
+
+	static int ASCII_OFFSET = 65;
+	
+	public static void main(String[] args) {
+		
+		LetterBag bag = new LetterBag();
+	
+		Player me = new Player("Carter",bag,7);
+		Player you = new Player("Computer",bag,7);
+		
+		for(int i = 0;i<7;i++){
+			
+			System.out.println(me.playTile(i));
+		
+		}
+		
+		bag.displayTiles();
+
+		for(int i = 0;i<7;i++){
+			
+			System.out.println(you.playTile(i));
+		
+		}
+		
+		bag.displayTiles();
+
+		
+	}
+
+}

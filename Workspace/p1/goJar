@@ -1,0 +1,4 @@
+#!/bin/csh 
+rm -f p1.jar
+jar cf p1.jar mycc.cup mycc.lex 
+echo "Put mycc.cup & mycc.lex in p1.jar"

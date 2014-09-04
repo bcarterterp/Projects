@@ -1,0 +1,115 @@
+Compiled from "<generated>"
+public class test03 extends java.lang.Object{
+public static int x;
+
+public static int y;
+
+public static void main(java.lang.String[]);
+  Code:
+   0:	iconst_1
+   1:	putstatic	#33; //Field x:I
+   4:	iconst_2
+   5:	putstatic	#36; //Field y:I
+   8:	iconst_3
+   9:	istore_1
+   10:	iconst_4
+   11:	istore_2
+   12:	getstatic	#12; //Field java/lang/System.out:Ljava/io/PrintStream;
+   15:	ldc	#38; //String Results should be : 2 7 1 2 3 4 
+   17:	invokevirtual	#29; //Method java/io/PrintStream.print:(Ljava/lang/String;)V
+   20:	getstatic	#12; //Field java/lang/System.out:Ljava/io/PrintStream;
+   23:	invokevirtual	#26; //Method java/io/PrintStream.println:()V
+   26:	getstatic	#33; //Field x:I
+   29:	iconst_3
+   30:	if_icmpeq	37
+   33:	iconst_0
+   34:	goto	39
+   37:	nop
+   38:	iconst_1
+   39:	nop
+   40:	ifeq	51
+   43:	getstatic	#12; //Field java/lang/System.out:Ljava/io/PrintStream;
+   46:	ldc	#40; //String Error 1
+   48:	invokevirtual	#29; //Method java/io/PrintStream.print:(Ljava/lang/String;)V
+   51:	nop
+   52:	getstatic	#36; //Field y:I
+   55:	iconst_2
+   56:	if_icmpne	63
+   59:	iconst_0
+   60:	goto	65
+   63:	nop
+   64:	iconst_1
+   65:	nop
+   66:	ifeq	80
+   69:	getstatic	#12; //Field java/lang/System.out:Ljava/io/PrintStream;
+   72:	ldc	#42; //String Error 2
+   74:	invokevirtual	#29; //Method java/io/PrintStream.print:(Ljava/lang/String;)V
+   77:	goto	98
+   80:	nop
+   81:	getstatic	#12; //Field java/lang/System.out:Ljava/io/PrintStream;
+   84:	getstatic	#36; //Field y:I
+   87:	invokevirtual	#22; //Method java/io/PrintStream.print:(I)V
+   90:	getstatic	#12; //Field java/lang/System.out:Ljava/io/PrintStream;
+   93:	ldc	#44; //String  
+   95:	invokevirtual	#29; //Method java/io/PrintStream.print:(Ljava/lang/String;)V
+   98:	nop
+   99:	iconst_1
+   100:	iconst_1
+   101:	if_icmpeq	108
+   104:	iconst_0
+   105:	goto	110
+   108:	nop
+   109:	iconst_1
+   110:	nop
+   111:	ifeq	134
+   114:	getstatic	#12; //Field java/lang/System.out:Ljava/io/PrintStream;
+   117:	iload_1
+   118:	iload_2
+   119:	iadd
+   120:	invokevirtual	#22; //Method java/io/PrintStream.print:(I)V
+   123:	getstatic	#12; //Field java/lang/System.out:Ljava/io/PrintStream;
+   126:	ldc	#44; //String  
+   128:	invokevirtual	#29; //Method java/io/PrintStream.print:(Ljava/lang/String;)V
+   131:	goto	151
+   134:	nop
+   135:	getstatic	#12; //Field java/lang/System.out:Ljava/io/PrintStream;
+   138:	ldc	#46; //String Error 3
+   140:	invokevirtual	#29; //Method java/io/PrintStream.print:(Ljava/lang/String;)V
+   143:	getstatic	#12; //Field java/lang/System.out:Ljava/io/PrintStream;
+   146:	ldc	#44; //String  
+   148:	invokevirtual	#29; //Method java/io/PrintStream.print:(Ljava/lang/String;)V
+   151:	nop
+   152:	nop
+   153:	getstatic	#33; //Field x:I
+   156:	iconst_5
+   157:	if_icmpne	164
+   160:	iconst_0
+   161:	goto	166
+   164:	nop
+   165:	iconst_1
+   166:	nop
+   167:	ifeq	198
+   170:	getstatic	#12; //Field java/lang/System.out:Ljava/io/PrintStream;
+   173:	getstatic	#33; //Field x:I
+   176:	invokevirtual	#22; //Method java/io/PrintStream.print:(I)V
+   179:	getstatic	#12; //Field java/lang/System.out:Ljava/io/PrintStream;
+   182:	ldc	#44; //String  
+   184:	invokevirtual	#29; //Method java/io/PrintStream.print:(Ljava/lang/String;)V
+   187:	getstatic	#33; //Field x:I
+   190:	iconst_1
+   191:	iadd
+   192:	putstatic	#33; //Field x:I
+   195:	goto	152
+   198:	nop
+   199:	getstatic	#12; //Field java/lang/System.out:Ljava/io/PrintStream;
+   202:	invokevirtual	#26; //Method java/io/PrintStream.println:()V
+   205:	return
+
+public test03();
+  Code:
+   0:	aload_0
+   1:	invokespecial	#55; //Method java/lang/Object."<init>":()V
+   4:	return
+
+}
+

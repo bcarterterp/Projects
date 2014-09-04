@@ -1,0 +1,22 @@
+1: 
+2: //------ test functions -------
+3: 
+4: int f1()       
+5:   { return 1; }
+6: 
+7: void f2(int y) 
+8:   { y = 1; }
+9: 
+10: void
+11: grammarTest() {
+12:   int x,y,z;
+13: 
+14:   // test function calls
+15:   x = f1();
+16:   f2(x);
+17: 
+18:   printInt(x);
+19:   printStr("Done!");
+20:   printLn();
+21: }
+22: 

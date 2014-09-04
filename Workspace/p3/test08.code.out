@@ -1,0 +1,149 @@
+Compiled from "<generated>"
+public class test08 extends java.lang.Object{
+public static int[] stack;
+
+public static int top;
+
+public static void initStack();
+  Code:
+   0:	iconst_1
+   1:	ineg
+   2:	putstatic	#53; //Field top:I
+   5:	return
+
+public static int pop();
+  Code:
+   0:	getstatic	#53; //Field top:I
+   3:	iconst_1
+   4:	ineg
+   5:	if_icmpeq	12
+   8:	iconst_0
+   9:	goto	14
+   12:	nop
+   13:	iconst_1
+   14:	nop
+   15:	ifeq	34
+   18:	getstatic	#12; //Field java/lang/System.out:Ljava/io/PrintStream;
+   21:	ldc	#56; //String ERROR: pop() empty stack
+   23:	invokevirtual	#42; //Method java/io/PrintStream.print:(Ljava/lang/String;)V
+   26:	getstatic	#12; //Field java/lang/System.out:Ljava/io/PrintStream;
+   29:	invokevirtual	#39; //Method java/io/PrintStream.println:()V
+   32:	iconst_0
+   33:	ireturn
+   34:	nop
+   35:	getstatic	#49; //Field stack:[I
+   38:	getstatic	#53; //Field top:I
+   41:	iaload
+   42:	istore_0
+   43:	getstatic	#53; //Field top:I
+   46:	iconst_1
+   47:	isub
+   48:	putstatic	#53; //Field top:I
+   51:	iload_0
+   52:	ireturn
+   53:	return
+
+public static void push(int);
+  Code:
+   0:	getstatic	#53; //Field top:I
+   3:	iconst_1
+   4:	iadd
+   5:	putstatic	#53; //Field top:I
+   8:	getstatic	#53; //Field top:I
+   11:	bipush	100
+   13:	if_icmpeq	20
+   16:	iconst_0
+   17:	goto	22
+   20:	nop
+   21:	iconst_1
+   22:	nop
+   23:	ifeq	41
+   26:	getstatic	#12; //Field java/lang/System.out:Ljava/io/PrintStream;
+   29:	ldc	#60; //String ERROR: push() full stack
+   31:	invokevirtual	#42; //Method java/io/PrintStream.print:(Ljava/lang/String;)V
+   34:	getstatic	#12; //Field java/lang/System.out:Ljava/io/PrintStream;
+   37:	invokevirtual	#39; //Method java/io/PrintStream.println:()V
+   40:	return
+   41:	nop
+   42:	getstatic	#49; //Field stack:[I
+   45:	getstatic	#53; //Field top:I
+   48:	iload_0
+   49:	iastore
+   50:	return
+   51:	return
+
+public static void iadd();
+  Code:
+   0:	invokestatic	#30; //Method pop:()I
+   3:	istore_1
+   4:	invokestatic	#30; //Method pop:()I
+   7:	istore_0
+   8:	iload_0
+   9:	iload_1
+   10:	iadd
+   11:	invokestatic	#45; //Method push:(I)V
+   14:	return
+
+public static void isub();
+  Code:
+   0:	invokestatic	#30; //Method pop:()I
+   3:	istore_1
+   4:	invokestatic	#30; //Method pop:()I
+   7:	istore_0
+   8:	iload_0
+   9:	iload_1
+   10:	isub
+   11:	invokestatic	#45; //Method push:(I)V
+   14:	return
+
+public static void main(java.lang.String[]);
+  Code:
+   0:	bipush	100
+   2:	newarray int
+   4:	putstatic	#49; //Field stack:[I
+   7:	invokestatic	#19; //Method initStack:()V
+   10:	getstatic	#12; //Field java/lang/System.out:Ljava/io/PrintStream;
+   13:	ldc	#63; //String Result should be: -2 4
+   15:	invokevirtual	#42; //Method java/io/PrintStream.print:(Ljava/lang/String;)V
+   18:	getstatic	#12; //Field java/lang/System.out:Ljava/io/PrintStream;
+   21:	invokevirtual	#39; //Method java/io/PrintStream.println:()V
+   24:	iconst_5
+   25:	invokestatic	#45; //Method push:(I)V
+   28:	iconst_4
+   29:	invokestatic	#45; //Method push:(I)V
+   32:	iconst_3
+   33:	invokestatic	#45; //Method push:(I)V
+   36:	invokestatic	#16; //Method iadd:()V
+   39:	invokestatic	#22; //Method isub:()V
+   42:	getstatic	#12; //Field java/lang/System.out:Ljava/io/PrintStream;
+   45:	invokestatic	#30; //Method pop:()I
+   48:	invokevirtual	#36; //Method java/io/PrintStream.print:(I)V
+   51:	getstatic	#12; //Field java/lang/System.out:Ljava/io/PrintStream;
+   54:	invokevirtual	#39; //Method java/io/PrintStream.println:()V
+   57:	bipush	105
+   59:	invokestatic	#45; //Method push:(I)V
+   62:	bipush	104
+   64:	invokestatic	#45; //Method push:(I)V
+   67:	bipush	103
+   69:	invokestatic	#45; //Method push:(I)V
+   72:	bipush	102
+   74:	invokestatic	#45; //Method push:(I)V
+   77:	invokestatic	#16; //Method iadd:()V
+   80:	invokestatic	#22; //Method isub:()V
+   83:	invokestatic	#16; //Method iadd:()V
+   86:	getstatic	#12; //Field java/lang/System.out:Ljava/io/PrintStream;
+   89:	invokestatic	#30; //Method pop:()I
+   92:	invokevirtual	#36; //Method java/io/PrintStream.print:(I)V
+   95:	getstatic	#12; //Field java/lang/System.out:Ljava/io/PrintStream;
+   98:	invokevirtual	#39; //Method java/io/PrintStream.println:()V
+   101:	return
+   102:	return
+
+public test08();
+  Code:
+   0:	aload_0
+   1:	invokespecial	#68; //Method java/lang/Object."<init>":()V
+   4:	return
+
+}
+

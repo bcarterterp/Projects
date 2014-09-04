@@ -1,0 +1,47 @@
+235: //------ test declaration & expression errors  -------
+236: int i;
+237: int i1;
+238: 
+239: void
+240: main() {
+241: 
+242:   // test declarations
+243:   int x,y,z,i;
+244:   int a,b,c;
+ERROR(245) redeclaration of y
+245:   int y;      // redeclaration of y
+246: 
+247:   // test arithmetic expressions
+248:   a = 1+2*b;
+ERROR(249) requires integer
+249:   c = b/(4 < 5);  // requires integer
+250:   x = -1-a;
+ERROR(251) undeclared variable d
+251:   z = -x+d-z;     // undeclared variable d
+252: }
+** Global Variables **
+i, int
+i1, int
+main, void, function, param = <void>
+printInt, void, function, param = int
+printLn, void, function, param = <void>
+printStr, void, function, param = String
+** Local Variables in main() **
+{
+a, int
+b, int
+c, int
+i, int
+x, int
+y, int
+z, int
+}
+TREE_PROC: main
+{
+    TREE_INSTR: a = (1 PLUS (2 MUL b))
+    TREE_INSTR: c = (b DIV (4 LESS 5))
+    TREE_INSTR: x = (( MINUS 1) MINUS a)
+    TREE_INSTR: z = ((( MINUS x) PLUS d) MINUS z)
+}
+END_PROC
+

@@ -1,0 +1,24 @@
+46: 
+47: //------ test functions -------
+48: 
+49: int f1()       
+50:   { return 1; }
+51: 
+52: void f2(int y) 
+53:   { y = 1; }
+54: 
+55: void
+56: grammarTest() {
+57:   int x,y,z;
+58: 
+59:   // test function calls
+60:   x = f1();
+61:   f2(x);
+62: 
+63:   printInt(x);
+ERROR(64) unterminated string
+64:   printStr("Done!);
+65:   printLn();
+66: 
+67: }
+68: 

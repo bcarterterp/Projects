@@ -1,0 +1,55 @@
+21: // test arithmetic operators
+22: int x,y;
+23: void main ( )
+24: {
+25:    int a,b;
+26:    x = 1;
+27:    a = 2+x;
+28:    y = -1+a*x;
+29:    b = (3*y)-(x-a);
+30:    printStr("Results should be: 1 3 2 8"); 
+31:    printLn();
+32: 
+33:    printInt(x); 
+34:    printStr(" ");
+35:    printInt(a); 
+36:    printStr(" ");
+37:    printInt(y); 
+38:    printStr(" ");
+39:    printInt(b); 
+40:    printLn();
+41: }
+** Global Variables **
+main, void, function, param = <void>
+printInt, void, function, param = int
+printLn, void, function, param = <void>
+printStr, void, function, param = String
+x, int
+y, int
+** Local Variables in main() **
+{
+a, int
+b, int
+}
+TREE_PROC: main
+{
+    TREE_INSTR: x = 1
+    TREE_INSTR: a = (2 PLUS x)
+    TREE_INSTR: y = (( MINUS 1) PLUS (a MUL x))
+    TREE_INSTR: b = ((3 MUL y) MINUS (x MINUS a))
+    TREE_INSTR: CALL printStr("Results should be: 1 3 2 8")
+    TREE_INSTR: CALL printLn()
+    TREE_INSTR: CALL printInt(x)
+    TREE_INSTR: CALL printStr(" ")
+    TREE_INSTR: CALL printInt(a)
+    TREE_INSTR: CALL printStr(" ")
+    TREE_INSTR: CALL printInt(y)
+    TREE_INSTR: CALL printStr(" ")
+    TREE_INSTR: CALL printInt(b)
+    TREE_INSTR: CALL printLn()
+}
+END_PROC
+
+** Executing test02.class **
+Results should be: 1 3 2 8
+1 3 2 8

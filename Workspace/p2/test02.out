@@ -1,0 +1,74 @@
+1: //------ test control flow statements -------
+2: 
+3: void
+4: main() {
+5:   int x,y,z;
+6: 
+7:   // test control flow
+8:   if (x == 1) 
+9:     { z = 1; }
+10:   else
+11:     { z = 2; }
+12: 
+13:   while (x < 6) 
+14:     { x = x + 1; }
+15: 
+16:   // test relational & logical expressions
+17: 
+18:   if ( (x == y) && (1 > z) ) 
+19:     { z = 5; }
+20: 
+21:   if ( !(x != z) ) 
+22:     { y = 2; }
+23: }
+24: 
+** Global Variables **
+main, void, function, param = <void>
+printInt, void, function, param = int
+printLn, void, function, param = <void>
+printStr, void, function, param = String
+** Local Variables in main() **
+{
+x, int
+y, int
+z, int
+{
+}
+{
+}
+{
+}
+{
+}
+{
+}
+}
+TREE_PROC: main
+{
+  TREE_IF: CONDITION: (x EQ_OP 1)
+{
+    TREE_INSTR: z = 1
+}
+  ELSE: 
+{
+    TREE_INSTR: z = 2
+}
+  END_IF 
+  TREE_WHILE: CONDITION: (x LESS 6)
+{
+    TREE_INSTR: x = (x PLUS 1)
+}
+  END_WHILE 
+  TREE_IF: CONDITION: ((x EQ_OP y) AND_OP (1 GR z))
+{
+    TREE_INSTR: z = 5
+}
+  END_IF 
+  TREE_IF: CONDITION: ( NOT_OP (x NE_OP z))
+{
+    TREE_INSTR: y = 2
+}
+  END_IF 
+}
+END_PROC
+

@@ -1,0 +1,31 @@
+
+public class Player {
+
+	private String name;
+	private int score;
+	private int hand[];
+	LetterBag bag;
+	
+	public Player(String name, LetterBag bag, int num){
+		
+		score = 0;
+		this.name = name;
+		this.bag = bag;
+		hand = this.bag.getTiles(num);
+		
+	}
+	
+	public char playTile(int num){
+		
+		char return_char[] = Character.toChars(hand[num]+65);
+		score+=hand[num];
+		hand[num] = bag.getTile();
+		return return_char[0];
+		
+	}
+	
+	public int score(){
+		return score;
+	}
+
+}

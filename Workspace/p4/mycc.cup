@@ -1,0 +1,336 @@
+package mycc;
+
+import java_cup.runtime.*;
+import java.lang.*;
+import java.util.*;
+import java.io.*;
+ 
+parser code {:
+	// one symbol table for global scope
+	// each function has its own symbol table
+	// each block statement has its own symbol table
+	
+	public static symTab globalSymTab; 	// global symbol table  
+	public static symTab currSymTab;   	// current symbol table
+        public static boolean optFlag;          // optimization flag
+        public static astNodeList code;         // list of proc ASTs    
+
+        public static ClassFile class_file;
+
+	// keep track of current type specification
+	public static int curType;              // store current var type 
+
+	// output error message with current line number
+	public static void msg(String s) {
+		System.out.println("ERROR("+(Yylex.pos()+1)+") "+s);
+	}
+
+	public static void main(String args[]) throws Exception {
+
+		globalSymTab = new symTab();   // init global symbol table
+		currSymTab = globalSymTab;     // global symtab is current 
+
+                // get name of input file
+                String fname = null;
+                String oFlag = null;
+
+                if (args.length == 1)
+                {
+                        fname = args[0];
+                        optFlag = false;               // optimization off
+                }
+                else if (args.length == 2) {
+                        fname = args[1];
+                        oFlag = args[0];
+                        optFlag = true;                // optimization on
+                }
+
+                if ((fname == null) ||
+                   !fname.endsWith(".c") ||
+                   ((args.length == 2) && !oFlag.equals("-O"))) {
+                        System.out.println("usage: java mycc.parser [-O] <file>.c");
+                        System.exit(-1);
+                }
+
+                String cname = fname.substring(0, fname.length()-2);
+                FileReader fp = new FileReader(fname);
+
+                addPrintFunctions();
+                new parser(new Yylex(fp)).parse();           // parse input
+                code.print();                                // print AST
+
+                ClassFile class_file = new ClassFile(cname); // prepare codegen
+                ClassFile.genCode(code, globalSymTab, true); 	// generate code
+
+	}
+
+        // add print functions in the global symbol table
+        private static void addPrintFunctions()
+        {
+                symTabEntry param;
+                symTabEntry func1;
+
+                /* printStr(string) */
+                param = new symTabEntry("DUMMY", sym.STRING_LITERAL);
+                func1 = new symTabEntry("printStr", sym.VOID);
+                func1.setFunc();
+                func1.setParam(param);
+                globalSymTab.addSym(func1);
+
+                /* printInt (int) */
+                param = new symTabEntry("DUMMY", sym.INT);
+                func1 = new symTabEntry("printInt", sym.VOID);
+                func1.setFunc();
+                func1.setParam(param);
+                globalSymTab.addSym(func1);
+
+                /* printLn () */
+                func1 = new symTabEntry("printLn", sym.VOID);
+                func1.setFunc();
+                globalSymTab.addSym(func1);
+        }
+
+:}
+
+terminal EQ_OP, NE_OP, AND_OP, OR_OP, NOT_OP;
+terminal INT, VOID, BOOL, IF, ELSE, WHILE, RETURN;
+terminal PLUS, MINUS, DIV, MUL, LPAREN, RPAREN, LBRACKET, RBRACKET;
+terminal LCURL, RCURL, SEMI, COMMA, LESS, GR, ASSIGN;
+
+terminal Integer CONSTANT;
+terminal String IDENTIFIER, STRING_LITERAL; 
+
+non terminal translation_unit;
+non terminal declaration, declarationList; 
+non terminal identList, typeSpec;
+
+non terminal expNode exp, boolExp, lhsVal, optArg, funcCall;
+non terminal symTabEntry ident, funcID, optParam;
+non terminal astNodeList stmtList, funcDefList;
+non terminal astNode stmt, blockStmt, funcDef;
+
+precedence left AND_OP, OR_OP, EQ_OP, NE_OP, GR, LESS, PLUS, MINUS, MUL, DIV, NOT_OP;
+
+start with translation_unit ;
+
+translation_unit 
+	::= declarationList funcDefList:l
+	{:
+		parser.globalSymTab.list();
+		parser.code = l;
+	:}
+	;
+
+declarationList  
+	::= declarationList declaration 
+	| 
+	;
+
+declaration  
+	::=  typeSpec identList SEMI
+	;
+
+typeSpec 
+	::= INT 
+	{: 
+		parser.curType = sym.INT; 
+	:} 
+	;
+
+identList 
+	::= ident:id
+	{:
+		parser.currSymTab.addSym(id);
+	:}
+	;
+
+ident
+	::= IDENTIFIER:id
+	{: 
+		symTabEntry s = new symTabEntry(id, parser.curType);
+		RESULT = s;
+	:}
+	;
+
+funcDefList
+	::= funcDef:s
+	{:
+		RESULT = new astNodeList();
+		RESULT.add(s);
+	:}
+	;
+
+funcDef 
+	::= funcID:id blockStmt:f
+	{: 
+		RESULT = new astNode();
+		RESULT.genProc(new expNode(id.getType(), id), f);
+	:} 
+	;
+
+funcID
+	::= typeSpec ident:s LPAREN optParam:p RPAREN 
+	{:
+                        s.setFunc();
+                        s.setSymTab(parser.globalSymTab);
+                        parser.globalSymTab.addSym(s);
+                        RESULT = s;
+	:}
+	;
+
+optParam
+	::= typeSpec ident:id
+	{: 
+		RESULT = id;
+	:} 
+	| 
+	{: 
+		RESULT = null;
+	:} 
+	;
+
+blockStmt
+	::= LCURL 
+	{: 
+                // set up new symbol table
+	:} 
+	declarationList stmtList:l RCURL 
+	{: 
+                // return to old symbol table
+		RESULT = new astNode();
+		RESULT.genBlk(l);
+	:} 
+	;
+
+stmtList 
+	::= stmtList:l stmt:s
+	{:
+		l.add(s);
+		RESULT = l;
+	:}
+	| 
+	{:
+		RESULT = new astNodeList();
+	:}
+	;
+
+stmt 
+	::= lhsVal:e1 ASSIGN exp:e2 SEMI
+	{:
+		RESULT = new astNode();
+		RESULT.genInstr(new expNode(sym.VOID, sym.ASSIGN, e1, e2));
+	:}
+
+	| IF LPAREN boolExp:e1 RPAREN blockStmt:b
+	{:
+		RESULT = new astNode();
+		RESULT.genIf(e1, b);
+	:}
+
+	| funcCall:f SEMI
+	{:
+		RESULT = new astNode();
+		RESULT.genInstr(f);
+	:}
+
+	;
+
+lhsVal 
+	::= IDENTIFIER:id
+	{:
+		symTabEntry s;
+		s = parser.currSymTab.getSym(id);
+		if (s == null) {
+			parser.msg("undeclared variable "+id);
+			RESULT = null;
+		}
+		else {
+			RESULT = new expNode(s.getType(), s); 
+		}
+	:}
+	;
+
+funcCall
+	::= IDENTIFIER:id LPAREN optArg:e2 RPAREN 
+	{: 
+		symTabEntry s = parser.globalSymTab.getSym(id);
+		expNode e1 = new expNode(sym.VOID, s);
+
+		if (id.equals("printInt")) { 
+			// special case
+			if ((e2 == null) || !e2.isINT()) {
+				parser.msg("parameter mismatch");
+			}
+			RESULT = new expNode(sym.VOID, Const.CALL, e1, e2);
+		}
+		else if (id.equals("printStr")) { 
+			// special case
+			if ((e2 == null) || !e2.isSTR()) {
+				parser.msg("parameter mismatch");
+			}
+			RESULT = new expNode(sym.VOID, Const.CALL, e1, e2);
+		}
+		else if (id.equals("printLn")) {
+			// special case
+			if (e2 != null) {
+				parser.msg("parameter mismatch");
+			}
+			RESULT = new expNode(sym.VOID, Const.CALL, e1);
+		}
+		else {
+			// add code to generate function call AST here
+			RESULT = null;
+		}
+	:}
+	;
+
+optArg ::= exp:e1
+	{: 
+		RESULT = e1;
+	:}
+	|
+	{: 
+		RESULT = null;
+	:}
+	;
+
+exp
+	::= CONSTANT:e1
+	{: 
+		RESULT = new expNode(e1); 
+	:}
+	| STRING_LITERAL:e1
+	{: 
+		RESULT = new expNode(e1); 
+	:}
+	| LPAREN exp:e1 RPAREN
+	{: 
+		RESULT = e1;
+	:}
+	| exp:e1 PLUS exp:e2
+	{: 
+		RESULT = new expNode(sym.INT,sym.PLUS,e1,e2);
+	:}
+	| exp:e1 EQ_OP exp:e2
+	{: 
+		RESULT = new expNode(sym.BOOL,sym.EQ_OP,e1,e2);
+	:}
+	| lhsVal:e1
+	{: 
+		RESULT = e1;
+	:}
+	| funcCall:e1
+	{: 
+		RESULT = e1;
+	:}
+	;
+
+boolExp
+	::= exp:e1 
+	{:
+		if (e1.type() != sym.BOOL) {
+			parser.msg("requires boolean");
+		}
+		RESULT = e1;
+	:}
+	;

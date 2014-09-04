@@ -1,0 +1,602 @@
+package mycc;
+
+import java_cup.runtime.*;
+import java.lang.*;
+import java.util.*;
+import java.io.*;
+ 
+parser code {:
+	// one symbol table for global scope
+	// each function has its own symbol table
+	// each block statement has its own symbol table
+	
+	public static symTab globalSymTab; 	// global symbol table  
+	public static symTab currSymTab;   	// current symbol table
+	public static boolean optFlag;		// optimization flag
+	public static astNodeList code;		// list of proc ASTs    
+
+	public static ClassFile class_file;
+
+	// keep track of current type specification
+	public static int curType;              // store current var type
+	public static int returnCheckerType; 
+
+	// output error message with current line number
+	public static void msg(String s) {
+		System.out.println("ERROR("+(Yylex.pos()+1)+") "+s);
+	}
+
+	public static void main(String args[]) throws Exception {
+
+		globalSymTab = new symTab();   // init global symbol table
+		currSymTab = globalSymTab;     // global symtab is current 
+
+                // get name of input file
+                String fname = null;
+                String oFlag = null;
+
+                if (args.length == 1)
+                {
+                        fname = args[0];
+                        optFlag = false;               // optimization off
+                }
+                else if (args.length == 2) {
+                        fname = args[1];
+                        oFlag = args[0];
+                        optFlag = true;                // optimization on
+                }
+
+                if ((fname == null) ||
+                   !fname.endsWith(".c") ||
+                   ((args.length == 2) && !oFlag.equals("-O"))) {
+                        System.out.println("usage: java mycc.parser [-O] <file>.c");
+                        System.exit(-1);
+                }
+
+                String cname = fname.substring(0, fname.length()-2);
+                FileReader fp = new FileReader(fname);
+
+                addPrintFunctions();
+                new parser(new Yylex(fp)).parse();           // parse input
+                code.print();                                // print AST
+
+                ClassFile class_file = new ClassFile(cname); // prepare codegen
+                ClassFile.generate_code(code, globalSymTab); // generate code
+
+	}
+
+        // add print functions in the global symbol table
+        private static void addPrintFunctions()
+        {
+                symTabEntry param;
+                symTabEntry func1;
+
+                /* printStr(string) */
+                param = new symTabEntry("DUMMY", sym.STRING_LITERAL);
+                func1 = new symTabEntry("printStr", sym.VOID);
+                func1.setFunc();
+                func1.setParam(param);
+                globalSymTab.addSym(func1);
+
+                /* printInt (int) */
+                param = new symTabEntry("DUMMY", sym.INT);
+                func1 = new symTabEntry("printInt", sym.VOID);
+                func1.setFunc();
+                func1.setParam(param);
+                globalSymTab.addSym(func1);
+
+                /* printLn () */
+                func1 = new symTabEntry("printLn", sym.VOID);
+                func1.setFunc();
+                globalSymTab.addSym(func1);
+        }
+
+:}
+
+terminal EQ_OP, NE_OP, AND_OP, OR_OP, NOT_OP;
+terminal INT, VOID, BOOL, IF, ELSE, WHILE, RETURN;
+terminal PLUS, MINUS, DIV, MUL, LPAREN, RPAREN, LBRACKET, RBRACKET;
+terminal LCURL, RCURL, SEMI, COMMA, LESS, GR, ASSIGN;
+
+terminal Integer CONSTANT;
+terminal String IDENTIFIER, STRING_LITERAL; 
+
+non terminal translation_unit;
+non terminal declaration, declarationList; 
+non terminal identList, typeSpec;
+
+non terminal expNode exp, boolExp, lhsVal, optArg, funcCall;
+non terminal symTabEntry ident, funcID, optParam;
+non terminal astNodeList stmtList, funcDefList;
+non terminal astNode stmt, blockStmt, funcDef;
+
+precedence left AND_OP, OR_OP;
+precedence left EQ_OP, NE_OP, GR, LESS;
+precedence left PLUS, MINUS;
+precedence left MUL, DIV;
+precedence left NOT_OP;
+
+start with translation_unit ;
+
+translation_unit 
+	::= declarationList funcDefList:l
+	{:
+		parser.globalSymTab.list();
+		parser.code = l;
+	:}
+	;
+
+declarationList  
+	::= declarationList declaration 
+	| 
+	;
+
+declaration  
+	::=  typeSpec identList SEMI
+	;
+
+typeSpec 
+	::= INT 
+	{: 
+		parser.curType = sym.INT; 
+	:}
+	| VOID
+	{:
+		parser.curType = sym.VOID;
+	:}
+	;
+
+identList 
+	::= ident:id
+	{:
+		if(parser.currSymTab.getLocalSym(id.name()) == null){
+			parser.currSymTab.addSym(id);
+		}else{
+		
+			parser.msg("redeclaration of "+id.name());
+		
+		}
+	:}
+	| identList COMMA ident:id
+	{:
+		if(parser.currSymTab.getLocalSym(id.name()) == null){
+			parser.currSymTab.addSym(id);
+		}else{
+		
+			parser.msg("redeclaration of "+id.name());
+		
+		}
+	:}
+	;
+
+ident
+	::= IDENTIFIER:id
+	{: 
+		symTabEntry s = new symTabEntry(id, parser.curType);
+		RESULT = s;
+	:}
+	| IDENTIFIER:id LBRACKET exp:e1	 RBRACKET
+	{: 
+		symTabEntry s = new symTabEntry(id, parser.curType);
+		s.setArray(e1.getVal());
+		RESULT = s;
+	:}
+	;
+
+funcDefList
+	::= funcDefList:fl funcDef:s
+	{:
+		fl.add(s);
+		RESULT = fl;
+	:}
+	| funcDef:s
+	{:
+		RESULT = new astNodeList();
+		RESULT.add(s);
+	:}
+	;
+
+	funcDef 
+		::= funcID:id blockStmt:f
+		{: 
+				RESULT = new astNode();
+				RESULT.genProc(new expNode(id.getType(), id), f);
+				parser.currSymTab = parser.currSymTab.getParent();
+				
+		:} 
+		| funcID:id SEMI	
+		{:
+			id.setForward();
+			parser.currSymTab = parser.currSymTab.getParent();
+		
+		:}
+		;
+
+funcID
+	::= typeSpec ident:s LPAREN optParam:p RPAREN 
+	{:
+						if(parser.currSymTab.getSym(s.name()) == null){
+						
+							s.setFunc();
+							parser.currSymTab.addSym(s);
+							symTab st = new symTab();
+                        	if(p != null){
+                        		s.setParam(p);
+                        		st.addSym(p);
+                        	}
+                        	st.setParent(parser.currSymTab);
+                        	s.setSymTab(st);
+                        	parser.currSymTab = st;
+                        	RESULT = s;
+                        	parser.returnCheckerType = s.getType();
+                        	
+						}else{
+						
+							symTabEntry fun = parser.currSymTab.getSym(s.name());
+							
+							if(fun.isForward()){
+								
+								if(fun.getType() != s.getType() || (fun.getParam() != null && p == null) || (fun.getParam() == null && p != null)){
+								
+									parser.msg("forward decl mismatch "+fun.name());
+								
+								}
+								
+								fun.unsetForward();
+								symTab st = new symTab();
+             	           		if(p != null){
+                	        		fun.setParam(p);
+                    	    		st.addSym(p);
+                        		}
+                        		st.setParent(parser.currSymTab);
+                 	       		fun.setSymTab(st);
+                    	    	parser.currSymTab = st;
+                    	    	parser.returnCheckerType = s.getType();
+                        	}else{
+                        	
+                        		symTab st = new symTab();
+                        		parser.msg("redeclaration of "+fun.name());
+                        		parser.returnCheckerType = s.getType();
+                        		st.setParent(parser.currSymTab);
+                        		parser.currSymTab = st;
+                        	}
+                        	
+                        	RESULT = fun;
+                        }
+	:}
+	;
+
+optParam
+	::= typeSpec ident:id
+	{: 
+		RESULT = id;
+	:} 
+	| 
+	{: 
+		RESULT = null;
+	:} 
+	;
+
+blockStmt
+	::= LCURL 
+	{: 
+                symTab st = new symTab();
+                st.setParent(parser.currSymTab);
+                parser.currSymTab.addChild(st);
+                parser.currSymTab = st;
+	:} 
+	declarationList stmtList:l RCURL 
+	{: 
+                // return to old symbol table
+		RESULT = new astNode();
+		RESULT.genBlk(l);
+		parser.currSymTab = parser.currSymTab.getParent();
+			
+	:} 
+	;
+
+stmtList 
+	::= stmtList:l stmt:s
+	{:
+		l.add(s);
+		RESULT = l;
+	:}
+	| 
+	{:
+		RESULT = new astNodeList();
+	:}
+	;
+
+stmt 
+	::= lhsVal:e1 ASSIGN exp:e2 SEMI
+	{:
+		if(e1.type() != e2.type()){
+			if(e1.isINT()){
+				parser.msg("requires integer");
+			}else{
+				parser.msg("requires boolean");
+			}
+		}
+		RESULT = new astNode();
+		RESULT.genInstr(new expNode(sym.VOID, sym.ASSIGN, e1, e2));
+	:}
+	| RETURN exp:e1 SEMI
+	{:
+		if(e1.type() != parser.returnCheckerType){
+		
+			parser.msg("return mismatch");
+		
+		}
+		RESULT = new astNode();
+		RESULT.genInstr(new expNode(e1.type(),sym.RETURN,e1));
+	
+	:}
+	| RETURN SEMI
+	{:
+	
+		if(parser.returnCheckerType != sym.VOID){
+		
+			parser.msg("return mismatch");
+		
+		}
+		RESULT = new astNode();
+		RESULT.genInstr(new expNode(sym.VOID,sym.RETURN));
+	:}
+	| IF LPAREN boolExp:e1 RPAREN blockStmt:b
+	{:
+		RESULT = new astNode();
+		RESULT.genIf(e1, b);
+	:}
+	| IF LPAREN boolExp:e1 RPAREN blockStmt:b1 ELSE blockStmt:b2
+	{:
+		RESULT = new astNode();
+		RESULT.genIfElse(e1,b1,b2);
+	:}
+	| WHILE LPAREN boolExp:e1 RPAREN blockStmt: b1
+	{:
+		RESULT = new astNode();
+		RESULT.genWhile(e1,b1);
+	:}
+	| funcCall:f SEMI
+	{:
+		RESULT = new astNode();
+		RESULT.genInstr(f);
+	:}
+	;
+
+lhsVal 
+	::= IDENTIFIER:id
+	{:
+		symTabEntry s;
+		s = parser.currSymTab.getSym(id);
+		if (s == null) {
+			s = new symTabEntry(id,sym.INT); 
+			parser.msg("undeclared variable "+id);
+			RESULT = new expNode(s.getType(), s);
+		}
+		else {
+			RESULT = new expNode(s.getType(), s); 
+		}
+		
+		if(s.isArray()){
+		
+			parser.msg("misuse of "+id);
+		
+		}
+	:}
+	|IDENTIFIER:id LBRACKET exp:e1 RBRACKET
+	{:
+		symTabEntry s;
+		s = parser.currSymTab.getSym(id);
+		if (s == null) {
+			s = new symTabEntry(id,sym.INT); 
+			parser.msg("undeclared variable "+id);
+			RESULT = new expNode(s.getType(), s);
+		}
+		else {
+			if(s.isArray()){
+				RESULT = new expNode(s.getType(), s, e1);
+			}else{
+				parser.msg("misuse of "+id);
+				RESULT = new expNode(s.getType(), s);
+			}
+			if(e1.type() != sym.INT){
+				parser.msg("illegal subscript");
+				RESULT = new expNode(s.getType(), s);
+			}
+		}
+	:}
+	;
+
+funcCall
+	::= IDENTIFIER:id LPAREN optArg:e2 RPAREN 
+	{: 
+		symTabEntry s = parser.globalSymTab.getSym(id);
+		expNode e1 = new expNode(sym.VOID, s);
+		if (id.equals("printInt")) { 
+			// special case
+			if ((e2 == null) || !e2.isINT()) {
+				parser.msg("parameter mismatch");
+			}
+			RESULT = new expNode(sym.VOID, Const.CALL, e1, e2);
+		}
+		else if (id.equals("printStr")) { 
+			// special case
+			if ((e2 == null) || !e2.isSTR()) {
+				parser.msg("parameter mismatch");
+			}
+			RESULT = new expNode(sym.VOID, Const.CALL, e1, e2);
+		}
+		else if (id.equals("printLn")) {
+			// special case
+			if (e2 != null) {
+				parser.msg("parameter mismatch");
+			}
+			RESULT = new expNode(sym.VOID, Const.CALL, e1);
+		}
+		else {
+			// add code to generate function call AST here
+				if(s == null){
+					if(parser.currSymTab.getSym(id) == null){
+						
+						
+						s = new symTabEntry(id,sym.INT); 
+						parser.msg("undeclared variable "+id);
+						RESULT = new expNode(s.getType(), s);
+					
+					}else{
+					
+						s = parser.currSymTab.getSym(id);
+						parser.msg("misuse of "+id);
+						RESULT = new expNode(s.getType(), s);
+						
+					}
+				}else if((s.getParam() == null && e2 != null) || (s.getParam() != null && e2 == null)){
+				
+					parser.msg("parameter mismatch");
+					
+					
+				}
+				if(s.isFunc()){
+				
+					RESULT = new expNode(s.getType(), Const.CALL, e1, e2);
+				
+				}
+				
+		}
+	:}
+	;
+
+optArg ::= exp:e1
+	{: 
+		RESULT = e1;
+	:}
+	|
+	{: 
+		RESULT = null;
+	:}
+	;
+
+	exp ::= CONSTANT:e1
+		{: 
+			RESULT = new expNode(e1); 
+		:}
+		| STRING_LITERAL:e1
+		{: 
+			RESULT = new expNode(e1); 
+		:}
+		| LPAREN exp:e1 RPAREN
+		{: 
+			RESULT = e1;
+		:}
+		| exp:e1 PLUS exp:e2
+		{: 
+			if(!e1.isINT()|| !e2.isINT()){
+				parser.msg("requires integer");
+			}
+			RESULT = new expNode(sym.INT,sym.PLUS,e1,e2);
+		:}
+		| exp:e1 MINUS exp:e2
+		{: 
+			if(!e1.isINT()|| !e2.isINT()){
+				parser.msg("requires integer");
+			}
+			RESULT = new expNode(sym.INT,sym.MINUS,e1,e2);
+		:}
+		| exp:e1 DIV exp:e2
+		{: 
+			if(!e1.isINT()|| !e2.isINT()){
+				parser.msg("requires integer");
+			}
+			RESULT = new expNode(sym.INT,sym.DIV,e1,e2);
+		:}
+		| exp:e1 MUL exp:e2
+		{: 
+			if(!e1.isINT()|| !e2.isINT()){
+				parser.msg("requires integer");
+			}
+			RESULT = new expNode(sym.INT,sym.MUL,e1,e2);
+		:}
+		| MINUS exp:e1
+		{: 	
+			if(!e1.isINT()){
+				parser.msg("requires integer");
+			}
+			RESULT = new expNode(sym.INT,sym.MINUS,e1);
+		:}
+		| exp:e1 EQ_OP exp:e2
+		{: 
+			if(e1.type() != e2.type()){
+				if(e1.isINT()){
+					parser.msg("requires integer");
+				}else{
+					parser.msg("requires boolean");
+				}
+			}
+			RESULT = new expNode(sym.BOOL,sym.EQ_OP,e1,e2);
+		:}
+		| exp:e1 NE_OP exp:e2
+		{: 
+			if(e1.type() != e2.type()){
+				if(e1.isINT()){
+					parser.msg("requires integer");
+				}else{
+					parser.msg("requires boolean");
+					}
+			}
+			RESULT = new expNode(sym.BOOL,sym.NE_OP,e1,e2);
+		:}
+		| exp:e1 GR exp:e2
+		{: 
+			if(!e1.isINT()|| !e2.isINT()){
+				parser.msg("requires integer");
+			}
+			RESULT = new expNode(sym.BOOL,sym.GR,e1,e2);
+		:}
+		| exp:e1 LESS exp:e2
+		{: 
+			if(!e1.isINT()|| !e2.isINT()){
+				parser.msg("requires integer");
+			}
+			RESULT = new expNode(sym.BOOL,sym.LESS,e1,e2);
+		:}
+		| exp:e1 OR_OP exp:e2
+		{: 
+			if(!e1.isBOOL()|| !e2.isBOOL()){
+				parser.msg("requires boolean");
+			}
+			RESULT = new expNode(sym.BOOL,sym.OR_OP,e1,e2);
+		:}
+		| exp:e1 AND_OP exp:e2
+		{: 
+			if(!e1.isBOOL()|| !e2.isBOOL()){
+				parser.msg("requires boolean");
+			}
+			RESULT = new expNode(sym.BOOL,sym.AND_OP,e1,e2);
+		:}
+		| NOT_OP exp:e1
+		{: 
+			if(!e1.isBOOL()){
+				parser.msg("requires boolean");
+			}
+			RESULT = new expNode(sym.BOOL,sym.NOT_OP,e1);
+		:}
+		| lhsVal:e1
+		{: 
+			RESULT = e1;
+		:}
+		| funcCall:e1
+		{: 
+			RESULT = e1;
+		:}
+		;
+
+boolExp
+	::= exp:e1 
+	{:
+		if (e1.type() != sym.BOOL) {
+			parser.msg("requires boolean");
+		}
+		RESULT = e1;
+	:}
+	;

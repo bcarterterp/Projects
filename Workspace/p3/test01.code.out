@@ -1,0 +1,54 @@
+Compiled from "<generated>"
+public class test01 extends java.lang.Object{
+public static int x;
+
+public static int y;
+
+public static void main(java.lang.String[]);
+  Code:
+   0:	iconst_1
+   1:	putstatic	#33; //Field x:I
+   4:	iconst_2
+   5:	istore_1
+   6:	iload_1
+   7:	putstatic	#36; //Field y:I
+   10:	getstatic	#33; //Field x:I
+   13:	istore_2
+   14:	getstatic	#12; //Field java/lang/System.out:Ljava/io/PrintStream;
+   17:	ldc	#38; //String Results should be: 1 2 2 1
+   19:	invokevirtual	#29; //Method java/io/PrintStream.print:(Ljava/lang/String;)V
+   22:	getstatic	#12; //Field java/lang/System.out:Ljava/io/PrintStream;
+   25:	invokevirtual	#26; //Method java/io/PrintStream.println:()V
+   28:	getstatic	#12; //Field java/lang/System.out:Ljava/io/PrintStream;
+   31:	getstatic	#33; //Field x:I
+   34:	invokevirtual	#22; //Method java/io/PrintStream.print:(I)V
+   37:	getstatic	#12; //Field java/lang/System.out:Ljava/io/PrintStream;
+   40:	ldc	#40; //String  
+   42:	invokevirtual	#29; //Method java/io/PrintStream.print:(Ljava/lang/String;)V
+   45:	getstatic	#12; //Field java/lang/System.out:Ljava/io/PrintStream;
+   48:	getstatic	#36; //Field y:I
+   51:	invokevirtual	#22; //Method java/io/PrintStream.print:(I)V
+   54:	getstatic	#12; //Field java/lang/System.out:Ljava/io/PrintStream;
+   57:	ldc	#40; //String  
+   59:	invokevirtual	#29; //Method java/io/PrintStream.print:(Ljava/lang/String;)V
+   62:	getstatic	#12; //Field java/lang/System.out:Ljava/io/PrintStream;
+   65:	iload_1
+   66:	invokevirtual	#22; //Method java/io/PrintStream.print:(I)V
+   69:	getstatic	#12; //Field java/lang/System.out:Ljava/io/PrintStream;
+   72:	ldc	#40; //String  
+   74:	invokevirtual	#29; //Method java/io/PrintStream.print:(Ljava/lang/String;)V
+   77:	getstatic	#12; //Field java/lang/System.out:Ljava/io/PrintStream;
+   80:	iload_2
+   81:	invokevirtual	#22; //Method java/io/PrintStream.print:(I)V
+   84:	getstatic	#12; //Field java/lang/System.out:Ljava/io/PrintStream;
+   87:	invokevirtual	#26; //Method java/io/PrintStream.println:()V
+   90:	return
+
+public test01();
+  Code:
+   0:	aload_0
+   1:	invokespecial	#49; //Method java/lang/Object."<init>":()V
+   4:	return
+
+}
+
